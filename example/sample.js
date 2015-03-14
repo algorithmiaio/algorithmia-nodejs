@@ -10,6 +10,6 @@ req.success(function(result, duration) {
 });
 
 req.error(function(err, responseCode, stacktrace) {
-  console.log("ERROR "+responseCode+": "+err);
+  console.error("ERROR "+responseCode+": "+err);
 });
 
