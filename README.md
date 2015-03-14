@@ -19,7 +19,7 @@ var algorithmia = require("algorithmia");
 
 algorithmia.setApiKey(process.env.ALGORITHMIA_API_KEY);
 
-var req = algorithmia.exec("kenny/Factor", 123);
+var req = algorithmia.exec("brejnko/UrlLinkList", "https://www.algorithmia.com");
 
 req.success(function(result, duration) {
   console.log("Completed in "+duration+" seconds.");
