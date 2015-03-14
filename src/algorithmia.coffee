@@ -17,6 +17,7 @@ algorithmia =
         options.method = 'POST'
         options.headers ||= {}
         options.headers['Accept'] = 'application/json'
+        options.headers['User-Agent'] = "NodeJS/#{process.version} (algorithmia.js)"
 
         if algorithmia.apiKey
             options.headers['Authorization'] = algorithmia.apiKey
