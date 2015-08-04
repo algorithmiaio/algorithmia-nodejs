@@ -21,10 +21,11 @@ var client = algorithmia(process.env.ALGORITHMIA_API_KEY);
 var input = "5";
 
 client.algo("docs/JavaAddOne").pipe(input).then(function(output) {
-	if (output.error)
-		console.log(output.error);
-
-	console.log(output.result);
+    if (output.error) {
+        console.log(output.error);
+    } else {
+        console.log(output.result);
+    }
 });
 ```
 

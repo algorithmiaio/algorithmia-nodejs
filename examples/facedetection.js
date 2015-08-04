@@ -17,8 +17,9 @@ var buffer = fs.readFileSync(image).toString("base64");
 
 client.algo("ANaimi/FaceDetection").pipe(buffer).then(function(output) {
 
-	if (output.error)
+	if (output.error) {
 		throw output.error.message;
+	}
 
 	console.log(output.result);
 });
