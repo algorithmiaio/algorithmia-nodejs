@@ -15,7 +15,7 @@ Add algorithmia to your package.json
 Call any algorithm on the Algorithmia platform:
 
 ```javascript
-var algorithmia = require("algorithmia.js");
+var algorithmia = require("algorithmia");
 
 var client = algorithmia(process.env.ALGORITHMIA_API_KEY);
 var input = "5";
