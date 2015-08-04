@@ -15,10 +15,10 @@ var client = algorithmia(process.env.ALGORITHMIA_API_KEY);
 var image = "theoffice.jpg";
 var buffer = fs.readFileSync(image).toString("base64");
 
-client.algo("ANaimi/FaceDetection").pipe(buffer).then(function(result) {
+client.algo("ANaimi/FaceDetection").pipe(buffer).then(function(output) {
 
-	if (result.error)
-		throw result.error.message;
+	if (output.error)
+		throw output.error.message;
 
-	console.log(result);
+	console.log(output.result);
 });

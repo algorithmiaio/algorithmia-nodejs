@@ -15,10 +15,10 @@ var documents 	= ["badger badger buffalo mushroom mushroom mushroom mushroom mus
 var maxKeywords = 2
 var input 		= [documents, maxKeywords];
 
-client.algo("nlp/KeywordsForDocumentSet").pipe(input).then(function(result) {
+client.algo("nlp/KeywordsForDocumentSet").pipe(input).then(function(output) {
 
-	if (result.error)
-		throw result.error.message;
+	if (output.error)
+		throw output.error.message;
 
-	console.log(result);
+	console.log(output.result);
 });

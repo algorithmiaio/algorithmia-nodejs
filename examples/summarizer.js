@@ -11,12 +11,14 @@ var client = algorithmia(process.env.ALGORITHMIA_API_KEY);
 
 var url = "http://www.paulgraham.com/hp.html";
 
-client.algo("util/Url2Text").pipe(url).then(function(result) {
+client.algo("util/Url2Text").pipe(url).then(function(output) {
 
-	if (result.error)
-		throw result.error.message;
+	if (output.error)
+		throw output.error.message;
 
-	client.algo("nlp/Summarizer").pipe(result).then(function(result) {
-		console.log(result);
+	var text = output.result;
+	
+	client.algo("nlp/Summarizer").pipe(text).then(function(output) {
+		console.log(output.result);
 	});
 });
