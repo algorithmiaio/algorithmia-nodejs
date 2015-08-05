@@ -34,8 +34,9 @@ Build
 
 Currently tested with nodejs v0.10.36
 
-    # install dev dependencies
+    # install dev dependencies and gulp-cli wrapper
     npm install
+    npm install -g gulp-cli
 
     # compile coffeescript
     gulp
