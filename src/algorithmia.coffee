@@ -1,49 +1,61 @@
-http = require('http')
 https = require('https')
 url = require('url')
 
-algorithmia = (key) ->
-  # construct a new client object
-  client = new Object
-  client.path = 'https://api.algorithmia.com/v1/algo/'
+Algorithm = require('./algorithm.js')
+Data = require('./data.js')
 
-  # make sure key starts with Simple
-  if key.indexOf('Simple ') == 0
-    client.key = key
-  else
-    client.key = 'Simple ' + key
+class AlgorithmiaClient
+  constructor: (key) ->
+    @api_path = 'https://api.algorithmia.com/v1/'
 
-  client.algo = (name) ->
-    @url = client.path + name
-    this
-
-  client.pipe = (params) ->
-    @params = params
-    if typeof params == 'object' or typeof params == 'string'
-      @data = JSON.stringify(params)
+    if key.indexOf('Simple ') == 0
+      @api_key = key
     else
-      @data = params + ''
-    this
+      @api_key = 'Simple ' + key
 
-  client.then = (callback) ->
-    # make options
-    options = url.parse(@url)
-    options.method = 'POST'
-    options.headers =
-      'Content-Type': 'application/json'
-      'Accept': 'application/json'
-      'Authorization': client.key
+  # algo
+  algo: (path) ->
+    new Algorithm(this, path)
+
+  # file
+  file: (path) ->
+    new Data(this, path)
+
+  # internal http-helper
+  req: (path, method, data, cheaders, callback) ->
+
+    # default header
+    dheader =
+      'Content-Type': 'application/JSON'
+      'Accept': 'application/JSON'
+      'Authorization': @api_key
       'User-Agent': 'NodeJS/' + process.version
+
+    # merge default header with custom header
+    for key,val of cheaders
+      dheader[key] = val
+    
+    # make options
+    options = url.parse(@api_path + path)
+    options.method = method
+    options.headers = dheader
 
     # trigger call
     req = https.request(options, (res) ->
       res.setEncoding 'utf8'
       chunks = []
+
       res.on 'data', (chunk) ->
         chunks.push chunk
+
       res.on 'end', ->
-        json = chunks.join('')
-        body = JSON.parse(json)
+        buff = chunks.join('')
+
+        if (dheader['Accept'] == 'application/JSON')
+          body = JSON.parse(buff) 
+        else
+          body = buff
+
         if callback
           if res.statusCode != 200
             if !body
@@ -54,10 +66,12 @@ algorithmia = (key) ->
         return
       res
     )
-    req.write client.data
-    req.end()
-    this
 
-  client
+    req.write data
+    req.end()
+
+# Factory method to avoid explicitly creating using the 'new' keyword
+algorithmia = (key) ->
+  new AlgorithmiaClient(key)
 
 module.exports = exports = algorithmia
