@@ -1,7 +1,7 @@
 algorithmia.js
 ==============
 
-A nodejs library for calling algorithms on Algorithmia.com
+A nodejs library for calling algorithms on Algorithmia.com with partial support fo the DataAPI
 
 
 Usage
@@ -29,6 +29,25 @@ client.algo("docs/JavaAddOne").pipe(input).then(function(output) {
 });
 ```
 
+Create and read files (strings and JSON)
+```javascript
+var algorithmia = require("algorithmia");
+
+var client = algorithmia(process.env.ALGORITHMIA_API_KEY);
+var content = "Hello!";
+
+// using putString, other options: getString, putJson, getJson
+client.file("data://.my/Test/foo.txt").putString(content, function(output) {
+    if (output.error) {
+        console.log(output.error);
+    } else {
+        console.log(output.result);
+    }
+});
+```
+
+See /examples for more.
+
 Build
 =====
 
@@ -40,3 +59,10 @@ Currently tested with nodejs v0.10.36
 
     # compile coffeescript
     gulp
+
+
+TODO
+=====
+    * Add tests
+    * Support DataAPI binary input/output
+    * Support DataAPI directory functions
