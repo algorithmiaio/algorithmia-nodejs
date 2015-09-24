@@ -1,0 +1,9 @@
+#!/bin/bash
+
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+
+TMP=$DIR/tmp/lambda
+mkdir -p $TMP
+cp contrib/lambda/index.js $TMP/
+cp -r $DIR/lib/* $TMP/
+cd $TMP && zip algorithmia-lambda-nodejs.zip *.js
