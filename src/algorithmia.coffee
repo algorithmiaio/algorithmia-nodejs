@@ -8,10 +8,13 @@ class AlgorithmiaClient
   constructor: (key) ->
     @api_path = 'https://api.algorithmia.com/v1/'
 
-    if key.indexOf('Simple ') == 0
-      @api_key = key
+    if key
+      if key.indexOf('Simple ') == 0
+        @api_key = key
+      else
+        @api_key = 'Simple ' + key
     else
-      @api_key = 'Simple ' + key
+      @api_key = ''
 
   # algo
   algo: (path) ->
