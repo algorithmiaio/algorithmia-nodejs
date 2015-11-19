@@ -11,8 +11,8 @@ var input = 5;
 
 client.algo("docs/JavaAddOne").pipe(input).then(function(response) {
     if(response.error) {
-        console.log("ERROR: " + response.error.message);
+        console.log("Error: " + response.error.message);
     } else {
-        console.log(response.result);
+        console.log(response.get());
     }
 });

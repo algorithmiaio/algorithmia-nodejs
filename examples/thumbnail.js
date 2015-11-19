@@ -10,22 +10,21 @@ var algorithmia = require("../lib/algorithmia.js"),
 
 var client = algorithmia(process.env.ALGORITHMIA_API_KEY);
 
-var image = __dirname+"/theoffice.jpg";
-var buffer = fs.readFileSync(image);
+var imageIn = __dirname+"/theoffice.jpg";
+var imageOut = __dirname+"/../tmp/theoffice_thumb.png";
+
+var buffer = fs.readFileSync(imageIn);
 
 client.algo("opencv/SmartThumbnail").pipe(buffer).then(function(response) {
     if(response.error) {
-        console.log("ERROR: " + response.error.message);
-        return;
+        return console.log("Error: " + response.error.message);
     }
 
-    var bufferOut = response.get();
-    var thumbnailPath = __dirname+"/../tmp/theoffice_thumb.png";
-    fs.writeFile(thumbnailPath, bufferOut, function(err) {
+    fs.writeFile(imageOut, response.get(), function(err) {
         if(err) {
             console.log("Error writing file: " + err);
         }
-        console.log("Success: " + thumbnailPath);
+        console.log("Success: " + imageOut);
     })
 
 });

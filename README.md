@@ -24,7 +24,7 @@ client.algo("docs/JavaAddOne").pipe(input).then(function(response) {
     if (response.error) {
         console.log(response.error);
     } else {
-        console.log(response.result);
+        console.log(response.get());
     }
 });
 ```

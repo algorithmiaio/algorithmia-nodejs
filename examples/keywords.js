@@ -16,10 +16,5 @@ var maxKeywords = 2
 var input       = [documents, maxKeywords];
 
 client.algo("nlp/KeywordsForDocumentSet").pipe(input).then(function(response) {
-
-    if(response.error) {
-        throw response.error.message;
-    }
-
-    console.log(response.result);
+    console.log(response.get());
 });
