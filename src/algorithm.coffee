@@ -13,11 +13,11 @@ class Algorithm
     data = input
 
     if Buffer.isBuffer(input)
-      contentType = "application/octet-stream"
-    else if typeof input == "string"
-        contentType = "text/plain"
+      contentType = 'application/octet-stream'
+    else if typeof input == 'string'
+      contentType = 'text/plain'
     else
-      contentType = "application/json"
+      contentType = 'application/json'
       data = JSON.stringify(input)
 
     @req = @client.req(
@@ -31,14 +31,14 @@ class Algorithm
     @promise
 
   pipeJson: (input) ->
-    if typeof input != "string"
+    if typeof input != 'string'
       throw "Cannot convert #{typeof input} to string"
 
     @req = @client.req(
       'algo/' + @algo_path,
       'POST',
       input,
-      {'Content-Type': "application/json"},
+      {'Content-Type': 'application/json'},
       (body) => @callback(body)
     )
 
