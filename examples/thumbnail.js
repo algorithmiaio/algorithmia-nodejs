@@ -13,10 +13,19 @@ var client = algorithmia(process.env.ALGORITHMIA_API_KEY);
 var image = __dirname+"/theoffice.jpg";
 var buffer = fs.readFileSync(image);
 
-client.algo("opencv/SmartThumbnail").pipe(buffer).then(function(output) {
-    if(output.error) {
-        console.log("ERROR: " + output.error.message);
-    } else {
-        console.log(output.result);
+client.algo("opencv/SmartThumbnail").pipe(buffer).then(function(response) {
+    if(response.error) {
+        console.log("ERROR: " + response.error.message);
+        return;
     }
+
+    var bufferOut = response.get();
+    var thumbnailPath = __dirname+"/../tmp/theoffice_thumb.png";
+    fs.writeFile(thumbnailPath, bufferOut, function(err) {
+        if(err) {
+            console.log("Error writing file: " + err);
+        }
+        console.log("Success: " + thumbnailPath);
+    })
+
 });

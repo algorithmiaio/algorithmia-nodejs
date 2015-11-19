@@ -20,11 +20,11 @@ var algorithmia = require("algorithmia");
 var client = algorithmia(process.env.ALGORITHMIA_API_KEY);
 var input = "5";
 
-client.algo("docs/JavaAddOne").pipe(input).then(function(output) {
-    if (output.error) {
-        console.log(output.error);
+client.algo("docs/JavaAddOne").pipe(input).then(function(response) {
+    if (response.error) {
+        console.log(response.error);
     } else {
-        console.log(output.result);
+        console.log(response.result);
     }
 });
 ```
@@ -37,11 +37,11 @@ var client = algorithmia(process.env.ALGORITHMIA_API_KEY);
 var content = "Hello!";
 
 // using putString, other options: getString, putJson, getJson
-client.file("data://.my/Test/foo.txt").putString(content, function(output) {
-    if (output.error) {
-        console.log(output.error);
+client.file("data://.my/Test/foo.txt").putString(content, function(response) {
+    if (response.error) {
+        console.log(response.error);
     } else {
-        console.log(output.result);
+        console.log(response.result);
     }
 });
 ```
@@ -64,5 +64,4 @@ Currently tested with nodejs v0.10.36
 TODO
 =====
     * Add tests
-    * Support DataAPI binary input/output
     * Support DataAPI directory functions

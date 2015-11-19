@@ -37,7 +37,7 @@ class AlgorithmiaClient
     # merge default header with custom header
     for key,val of cheaders
       dheader[key] = val
-    
+
     # make options
     options = url.parse(@api_path + path)
     options.method = method
@@ -55,17 +55,17 @@ class AlgorithmiaClient
         buff = chunks.join('')
 
         if (dheader['Accept'] == 'application/JSON')
-          body = JSON.parse(buff) 
+          body = JSON.parse(buff)
         else
           body = buff
 
         if callback
-          if res.statusCode != 200
+          if res.statusCode < 200 || res.statusCode >= 300
             if !body
               body = {}
             if !body.error
               body.error = message: 'HTTP Response: ' + res.statusCode
-          callback body
+          callback body, res.statusCode
         return
       res
     )

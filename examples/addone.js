@@ -9,10 +9,10 @@ var algorithmia = require("../lib/algorithmia.js");
 var client = algorithmia(process.env.ALGORITHMIA_API_KEY);
 var input = 5;
 
-client.algo("docs/JavaAddOne").pipe(input).then(function(output) {
-    if(output.error) {
-        console.log("ERROR: " + output.error.message);
+client.algo("docs/JavaAddOne").pipe(input).then(function(response) {
+    if(response.error) {
+        console.log("ERROR: " + response.error.message);
     } else {
-        console.log(output.result);
+        console.log(response.result);
     }
 });
