@@ -8,18 +8,32 @@ class Algorithm
     @algo_path = path
 
   # pipe
-  pipe: (params) ->
-    @algo_params = params
+  pipe: (input) ->
+    data = input
 
-    if typeof params == 'object' or typeof params == 'string'
-      @algo_data = JSON.stringify(params)
+    if Buffer.isBuffer(input)
+      contentType = "application/octet-stream"
+    else if typeof input == "string"
+      try
+        contentType = "application/json"
+      catch
+        contentType = "plain/text"
     else
-      @algo_data = params + ''
-    
+      contentType = "application/json"
+      data = JSON.stringify(input)
+
+    @req = @client.req(
+      'algo/' + @algo_path,
+      'POST',
+      data,
+      {'Content-Type': contentType},
+      (body) => @callback(body)
+    )
+
     this
 
   # then
   then: (callback) ->
-    @client.req('algo/' + @algo_path, 'POST', @algo_data, {}, callback)
+    @callback = callback
 
 module.exports = exports = Algorithm
