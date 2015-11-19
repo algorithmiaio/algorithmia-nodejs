@@ -6,6 +6,7 @@ class Algorithm
   constructor: (client, path) ->
     @client = client
     @algo_path = path
+    @promise = { then: (callback) => @callback = callback }
 
   # pipe
   pipe: (input) ->
@@ -27,7 +28,7 @@ class Algorithm
       (body) => @callback(body)
     )
 
-    this
+    @promise
 
   pipeJson: (input) ->
     if typeof input != "string"
@@ -41,10 +42,8 @@ class Algorithm
       (body) => @callback(body)
     )
 
-    this
+    @promise
 
-  # then
-  then: (callback) ->
-    @callback = callback
+
 
 module.exports = exports = Algorithm
