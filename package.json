@@ -1,7 +1,18 @@
 {
   "name": "algorithmia",
-  "version": "0.2.1",
+  "version": "0.3.0",
+  "description": "Client library for calling algorithms in the Algorithmia marketplace",
+  "url": "http://github.com/algorithmiaio/algorithmia-nodejs",
   "main": "./lib/algorithmia.js",
+  "keywords": [
+    "algorithm",
+    "cloud",
+    "api"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/algorithmiaio/algorithmia-nodejs.git"
+  },
   "dependencies": {},
   "devDependencies": {
     "gulp": "3.9.*",
