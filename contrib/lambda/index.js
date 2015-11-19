@@ -3,81 +3,43 @@
  *
  * Calls any algorithm in the Algorithmia marketplace
  * Get an API key and free credits by creating an account at algorithmia.com
+ * For more documentation see: algorithmia.com/docs/clients/lambda
+ *
+ *
+ * Follow these steps to encrypt your Algorithmia API Key for use in this function:
+ *
+ * 1. Create a KMS key - http://docs.aws.amazon.com/kms/latest/developerguide/create-keys.html
+ *
+ * 2. Encrypt the event collector token using the AWS CLI
+ *      aws kms encrypt --key-id alias/<KMS key name> --plaintext "<ALGORITHMIA_API_KEY>"
+ *
+ * 3. Copy the base-64 encoded, encrypted key (CiphertextBlob) to the kmsEncryptedApiKey variable
+ *
+ * 4. Give your function's role permission for the kms:Decrypt action.
+ * Example:
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+    {
+        "Sid": "Stmt1443036478000",
+        "Effect": "Allow",
+        "Action": [
+            "kms:Decrypt"
+            ],
+        "Resource": [
+            "<your KMS key ARN>"
+            ]
+    }
+    ]
+}
  */
 
 var AWS = require('aws-sdk');
 var apiKey, kmsEncryptedApiKey;
 
-/*
- * Step 1: Set your API key below
- *  Basic method:
- *    Set apiKey to your Algorithmia API key:
- *
- *  Advanced method (more secure):
- *    Set kmsEncryptedApiKey to the encrypted value after using AWS-KMS to encrypt your key:
- *
- *    To create a kmsEncryptedApiKey:
- *    - Create a KMS key - http://docs.aws.amazon.com/kms/latest/developerguide/create-keys.html
- *    - Encrypt your Algorithmia API key using the AWS CLI
- *      aws kms encrypt --key-id alias/<KMS key name> --plaintext "<ALGORITHMIA_API_KEY>"
- *    - Copy the base-64 encoded, encrypted key (CiphertextBlob) to the kmsEncryptedApiKey variable
- *    - Give your function's role permission for the kms:Decrypt action.
- *      Example:
- *          {
- *              "Version": "2012-10-17",
- *              "Statement": [
- *                  {
- *                      "Sid": "Stmt1443036478000",
- *                      "Effect": "Allow",
- *                      "Action": [
- *                          "kms:Decrypt"
- *                      ],
- *                      "Resource": [
- *                          "<your KMS Key ARN>"
- *                      ]
- *                  }
- *              ]
- *          }
- */
-// apiKey = "<your Algorithmia api key>";       // Basic Method
-// kmsEncryptedApiKey = "<encrypted kms key>";  // Advanced Method
-
-
-var processEvent = function(event, context) {
-    /*
-     * Step 2: Set the algorithm you want to call
-     *  This may be any algorithm in the Algorithmia marketplace
-    */
-    var algorithm = "<ALGORITHM>"; // e.g. "algo://opencv/SmartThumbnail"
-
-    /*
-     * Step 3: Use your event source to set inputData according to the algorithm's input format
-     *
-     *  Example: Create 200x50 thumbnails for an S3 file event using algo://opencv/SmartThumbnail
-     *           Algorithm expects input as [URL, WIDTH, HEIGHT]
-     *           Output is a base64 encoding of the resulting PNG thumbnail
-     *
-     *      var s3 = new AWS.S3();
-     *      var bucket = event.Records[0].s3.bucket.name;
-     *      var key = decodeURIComponent(event.Records[0].s3.object.key.replace(/\+/g, " ")) ;
-     *      var params = {Bucket: bucket, Key: key};
-     *      var signedUrl = s3.getSignedUrl('getObject', params);
-     *      var inputData = [signedUrl, 200, 50];
-     */
-    var inputData = "<INPUT_DATA>";
-
-    // Run the algorithm
-    var client = algorithmia(apiKey);
-    client.algo(algorithm).pipe(inputData).then(function(output) {
-        if(output.error) {
-            console.log("Error: " + output.error.message);
-            context.fail(output.error.message);
-        } else {
-            console.log(output.result);
-            context.succeed(output.result);
-        }
-    });
-}
+// Enter the base-64 encoded, encrypted key (CiphertextBlob)
+kmsEncryptedApiKey = "<kmsEncryptedApiKey>";
 
 /*
  * This is the lambda entrypoint (no modification necessary)
@@ -85,7 +47,7 @@ var processEvent = function(event, context) {
  *   and then calls processEvent with the same event and context
  */
 exports.handler = function(event, context) {
-    if(kmsEncryptedApiKey) {
+    if(kmsEncryptedApiKey && kmsEncryptedApiKey !== "<kmsEncryptedApiKey>") {
         var encryptedBuf = new Buffer(kmsEncryptedApiKey, 'base64');
         var cipherText = { CiphertextBlob: encryptedBuf };
 
@@ -105,6 +67,54 @@ exports.handler = function(event, context) {
         context.fail("API Key has not been set.")
     }
 };
+
+
+/*
+ * Configure your function to interact
+*/
+var processEvent = function(event, context) {
+    /*
+     * Step 1: Set the algorithm you want to call
+     *  This may be any algorithm in the Algorithmia marketplace
+    */
+    var algorithm = "algo://demo/Hello"; // algorithmia.com/algorithms/demo/Hello
+
+    /*
+     * Step 2: Use your event source to set inputData according to the algorithm's input format
+     *         This demo example uses the S3 Object's name as inputData
+     */
+    var inputData = event.Records[0].s3.object.key; // Example for algo://demo/Hello
+
+    /*  Advanced example:
+     *      Create 200x50 thumbnails for S3 file events using algo://opencv/SmartThumbnail
+     *          Algorithm expects input as [URL, WIDTH, HEIGHT]
+     *          Output is a base64 encoding of the resulting PNG thumbnail
+     *
+     *      var algorithm = "algo://opencv/SmartThumbnail"
+     *      var s3 = new AWS.S3();
+     *      var bucket = event.Records[0].s3.bucket.name;
+     *      var key = decodeURIComponent(event.Records[0].s3.object.key.replace(/\+/g, " ")) ;
+     *      var params = {Bucket: bucket, Key: key};
+     *      var signedUrl = s3.getSignedUrl('getObject', params);
+     *      var inputData = [signedUrl, 200, 50];
+     */
+
+    // Run the algorithm
+    var client = algorithmia(apiKey);
+    client.algo(algorithm).pipe(inputData).then(function(output) {
+        if(output.error) {
+            console.log("Error: " + output.error.message);
+            context.fail(output.error.message);
+        } else {
+            /*
+             * Step 3: Process the algorithm output here
+             *         This demo example prints and succeeds with the algorithm result
+             */
+            console.log(output);
+            context.succeed(output.result);
+        }
+    });
+}
 
 
 /*
@@ -138,7 +148,7 @@ AlgorithmiaClient = (function() {
       'Content-Type': 'application/JSON',
       'Accept': 'application/JSON',
       'Authorization': this.api_key,
-      'User-Agent': 'NodeJS/' + process.version
+      'User-Agent': 'Algorithmia.js/0.2.1 NodeJS/' + process.version + ' Lambda/1.0.0'
     };
     for (key in cheaders) {
       val = cheaders[key];
