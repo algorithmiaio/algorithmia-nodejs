@@ -15,7 +15,7 @@ class Algorithm
     if Buffer.isBuffer(input)
       contentType = "application/octet-stream"
     else if typeof input == "string"
-        contentType = "plain/text"
+        contentType = "text/plain"
     else
       contentType = "application/json"
       data = JSON.stringify(input)
