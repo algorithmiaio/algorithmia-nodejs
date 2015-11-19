@@ -14,9 +14,6 @@ class Algorithm
     if Buffer.isBuffer(input)
       contentType = "application/octet-stream"
     else if typeof input == "string"
-      try
-        contentType = "application/json"
-      catch
         contentType = "plain/text"
     else
       contentType = "application/json"
@@ -27,6 +24,20 @@ class Algorithm
       'POST',
       data,
       {'Content-Type': contentType},
+      (body) => @callback(body)
+    )
+
+    this
+
+  pipeJson: (input) ->
+    if typeof input != "string"
+      throw "Cannot convert #{typeof input} to string"
+
+    @req = @client.req(
+      'algo/' + @algo_path,
+      'POST',
+      input,
+      {'Content-Type': "application/json"},
       (body) => @callback(body)
     )
 
