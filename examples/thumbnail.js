@@ -8,7 +8,7 @@
 var algorithmia = require("../lib/algorithmia.js"),
     fs = require("fs");
 
-var client = algorithmia(process.env.ALGORITHMIA_API_KEY);
+var client = algorithmia.client(process.env.ALGORITHMIA_API_KEY);
 
 var imageIn = __dirname+"/theoffice.jpg";
 var imageOut = __dirname+"/../tmp/theoffice_thumb.png";

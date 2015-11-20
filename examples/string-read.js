@@ -7,7 +7,7 @@
 */
 
 var algorithmia = require("../lib/algorithmia.js");
-var client = algorithmia(process.env.ALGORITHMIA_API_KEY);
+var client = algorithmia.client(process.env.ALGORITHMIA_API_KEY);
 
 // === Create/Update file
 client.file("data://.my/TestCollection/foo.txt").getString(function(response) {

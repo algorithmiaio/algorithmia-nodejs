@@ -6,7 +6,7 @@
 
 var algorithmia = require("../lib/algorithmia.js");
 
-var client = algorithmia(process.env.ALGORITHMIA_API_KEY);
+var client = algorithmia.client(process.env.ALGORITHMIA_API_KEY);
 var input = 5;
 
 client.algo("docs/JavaAddOne").pipe(input).then(function(response) {

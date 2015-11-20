@@ -1,20 +1,23 @@
 https = require('https')
+http = require('http')
 url = require('url')
 
 Algorithm = require('./algorithm.js')
 Data = require('./data.js')
 
+defaultApiAddress = 'https://api.algorithmia.com/v1/'
+
 class AlgorithmiaClient
-  constructor: (key) ->
-    @api_path = 'https://api.algorithmia.com/v1/'
+  constructor: (key, address) ->
+    @apiAddress = address || defaultApiAddress
 
     if key
       if key.indexOf('Simple ') == 0
-        @api_key = key
+        @apiKey = key
       else
-        @api_key = 'Simple ' + key
+        @apiKey = 'Simple ' + key
     else
-      @api_key = ''
+      @apiKey = ''
 
   # algo
   algo: (path) ->
@@ -31,7 +34,7 @@ class AlgorithmiaClient
     dheader =
       'Content-Type': 'application/JSON'
       'Accept': 'application/JSON'
-      'Authorization': @api_key
+      'Authorization': @apiKey
       'User-Agent': 'NodeJS/' + process.version
 
     # merge default header with custom header
@@ -39,12 +42,21 @@ class AlgorithmiaClient
       dheader[key] = val
 
     # make options
-    options = url.parse(@api_path + path)
+    options = url.parse(@apiAddress + path)
     options.method = method
     options.headers = dheader
 
+    # helper method to switch between http / https
+    request = (options, cb) ->
+      if options.protocol == "https:"
+        https.request(options, cb)
+      else if options.protocol == "http:"
+        http.request(options, cb)
+      else
+        console.error("Invalid api address " + options.path)
+
     # trigger call
-    req = https.request(options, (res) ->
+    req = request(options, (res) ->
       res.setEncoding 'utf8'
       chunks = []
 
@@ -73,8 +85,22 @@ class AlgorithmiaClient
     req.write data
     req.end()
 
-# Factory method to avoid explicitly creating using the 'new' keyword
-algorithmia = (key) ->
-  new AlgorithmiaClient(key)
+algorithmia = {
+  # default api key and address
+  apiKey: null
+  apiAddress: defaultApiAddress
+
+  client: (key, address) ->
+    new AlgorithmiaClient(key || @apiKey, address || @apiAddress)
+
+  # Convinience methods to use default client
+  algo: (path) ->
+    @defaultClient = @defaultClient || new AlgorithmiaClient(apiKey, apiAddress)
+    @defaultClient.algo(path)
+
+  file: (path) ->
+    @defaultClient = @defaultClient || new AlgorithmiaClient(apiKey, apiAddress)
+    @defaultClient.algo(path)
+}
 
 module.exports = exports = algorithmia

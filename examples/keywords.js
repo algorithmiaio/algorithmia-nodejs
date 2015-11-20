@@ -9,7 +9,7 @@
 */
 
 var algorithmia = require("../lib/algorithmia.js");
-var client = algorithmia(process.env.ALGORITHMIA_API_KEY);
+var client = algorithmia.client(process.env.ALGORITHMIA_API_KEY);
 
 var documents   = ["badger badger buffalo mushroom mushroom mushroom mushroom mushroom mushroom mushroom","antelope buffalo mushroom","bannana"]
 var maxKeywords = 2
