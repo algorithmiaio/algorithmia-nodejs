@@ -36,8 +36,9 @@ class AlgorithmiaClient
     dheader =
       'Content-Type': 'application/JSON'
       'Accept': 'application/JSON'
-      'Authorization': @apiKey
       'User-Agent': 'algorithmia-nodejs/' + packageJson.version + ' (NodeJS ' + process.version + ')'
+    if @apiKey
+      dheader['Authorization'] = @apiKey
 
     # merge default header with custom header
     for key,val of cheaders
