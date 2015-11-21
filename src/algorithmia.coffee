@@ -6,7 +6,7 @@ packageJson = require('../package.json')
 Algorithm = require('./algorithm.js')
 Data = require('./data.js')
 
-defaultApiAddress = 'https://api.algorithmia.com/v1/'
+defaultApiAddress = 'https://api.algorithmia.com'
 
 class AlgorithmiaClient
   constructor: (key, address) ->

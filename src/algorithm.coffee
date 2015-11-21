@@ -35,7 +35,7 @@ class Algorithm
       throw "Cannot convert #{typeof input} to string"
 
     @req = @client.req(
-      'algo/' + @algo_path,
+      '/v1/algo/' + @algo_path,
       'POST',
       input,
       {'Content-Type': 'application/json'},
