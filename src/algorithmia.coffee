@@ -1,6 +1,7 @@
 https = require('https')
 http = require('http')
 url = require('url')
+packageJson = require('../package.json')
 
 Algorithm = require('./algorithm.js')
 Data = require('./data.js')
@@ -36,7 +37,7 @@ class AlgorithmiaClient
       'Content-Type': 'application/JSON'
       'Accept': 'application/JSON'
       'Authorization': @apiKey
-      'User-Agent': 'NodeJS/' + process.version
+      'User-Agent': 'algorithmia-nodejs/' + packageJson.version + ' (NodeJS ' + process.version + ')'
 
     # merge default header with custom header
     for key,val of cheaders
@@ -48,7 +49,7 @@ class AlgorithmiaClient
     options.headers = dheader
 
     # helper method to switch between http / https
-    protocol = if options.protocol == "https:" then https else http
+    protocol = if options.protocol == 'https:' then https else http
 
     # trigger call
     httpRequest = protocol.request(options, (res) ->
@@ -81,19 +82,16 @@ class AlgorithmiaClient
     httpRequest.end()
     return
 
-algorithmia = {
-
-  client: (key, address) ->
+algorithmia = (key,address) -> new AlgorithmiaClient(key, address)
+algorithmia.client = (key, address) ->
     new AlgorithmiaClient(key, address)
 
-  # Convinience methods to use default client
-  algo: (path) ->
+# Convenience methods to use default client
+algorithmia.algo = (path) ->
     @defaultClient = @defaultClient || new AlgorithmiaClient()
     @defaultClient.algo(path)
-
-  file: (path) ->
+algorithmia.file = (path) ->
     @defaultClient = @defaultClient || new AlgorithmiaClient()
-    @defaultClient.algo(path)
-}
+    @defaultClient.file(path)
 
 module.exports = exports = algorithmia
