@@ -10,7 +10,7 @@
   "eventSources": {
     "s3": [{}]
   },
-  "version": "1.0.0",
+  "version": "1.0.1",
   "build": "https://s3.amazonaws.com/algorithmia-lambda/index.js",
   "license": "MIT",
   "tags": [

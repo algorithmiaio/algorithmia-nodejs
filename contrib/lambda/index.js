@@ -120,17 +120,23 @@ var processEvent = function(event, context) {
 /*
  * Algorithmia NodeJS SDK below
  */
-var Algorithm, AlgorithmiaClient, Data, algorithmia, https, url;
+var Algorithm, AlgorithmiaClient, AlgoResponse, Data, algorithmia, https, url;
 https = require('https');
+http = require('http');
 url = require('url');
 
 AlgorithmiaClient = (function() {
-  function AlgorithmiaClient(key) {
-    this.api_path = 'https://api.algorithmia.com/v1/';
-    if (key.indexOf('Simple ') === 0) {
-      this.api_key = key;
+  function AlgorithmiaClient(key, address) {
+    this.apiAddress = address || process.env.ALGORITHMIA_API || defaultApiAddress;
+    key = key || process.env.ALGORITHMIA_API_KEY;
+    if (key) {
+      if (key.indexOf('Simple ') === 0) {
+        this.apiKey = key;
+      } else {
+        this.apiKey = 'Simple ' + key;
+      }
     } else {
-      this.api_key = 'Simple ' + key;
+      this.apiKey = '';
     }
   }
 
@@ -143,21 +149,24 @@ AlgorithmiaClient = (function() {
   };
 
   AlgorithmiaClient.prototype.req = function(path, method, data, cheaders, callback) {
-    var dheader, key, options, req, val;
+    var dheader, httpRequest, key, options, protocol, val;
     dheader = {
       'Content-Type': 'application/JSON',
       'Accept': 'application/JSON',
-      'Authorization': this.api_key,
-      'User-Agent': 'Algorithmia.js/0.2.1 NodeJS/' + process.version + ' Lambda/1.0.0'
+      'User-Agent': 'algorithmia-lambda/1.0.1 (NodeJS ' + process.version + ')'
     };
+    if (this.apiKey) {
+      dheader['Authorization'] = this.apiKey;
+    }
     for (key in cheaders) {
       val = cheaders[key];
       dheader[key] = val;
     }
-    options = url.parse(this.api_path + path);
+    options = url.parse(this.apiAddress + path);
     options.method = method;
     options.headers = dheader;
-    req = https.request(options, function(res) {
+    protocol = options.protocol === 'https:' ? https : http;
+    httpRequest = protocol.request(options, function(res) {
       var chunks;
       res.setEncoding('utf8');
       chunks = [];
@@ -173,7 +182,7 @@ AlgorithmiaClient = (function() {
           body = buff;
         }
         if (callback) {
-          if (res.statusCode !== 200) {
+          if (res.statusCode < 200 || res.statusCode >= 300) {
             if (!body) {
               body = {};
             }
@@ -183,21 +192,35 @@ AlgorithmiaClient = (function() {
               };
             }
           }
-          callback(body);
+          callback(body, res.statusCode);
         }
       });
       return res;
     });
-    req.write(data);
-    return req.end();
+    httpRequest.write(data);
+    httpRequest.end();
   };
 
   return AlgorithmiaClient;
 
 })();
 
-algorithmia = function(key) {
-  return new AlgorithmiaClient(key);
+algorithmia = function(key, address) {
+  return new AlgorithmiaClient(key, address);
+};
+
+algorithmia.client = function(key, address) {
+  return new AlgorithmiaClient(key, address);
+};
+
+algorithmia.algo = function(path) {
+  this.defaultClient = this.defaultClient || new AlgorithmiaClient();
+  return this.defaultClient.algo(path);
+};
+
+algorithmia.file = function(path) {
+  this.defaultClient = this.defaultClient || new AlgorithmiaClient();
+  return this.defaultClient.file(path);
 };
 
 
@@ -205,23 +228,80 @@ Algorithm = (function() {
   function Algorithm(client, path) {
     this.client = client;
     this.algo_path = path;
+    this.promise = {
+      then: (function(_this) {
+        return function(callback) {
+          return _this.callback = callback;
+        };
+      })(this)
+    };
   }
 
-  Algorithm.prototype.pipe = function(params) {
-    this.algo_params = params;
-    if (typeof params === 'object' || typeof params === 'string') {
-      this.algo_data = JSON.stringify(params);
+  Algorithm.prototype.pipe = function(input) {
+    var contentType, data;
+    data = input;
+    if (Buffer.isBuffer(input)) {
+      contentType = 'application/octet-stream';
+    } else if (typeof input === 'string') {
+      contentType = 'text/plain';
     } else {
-      this.algo_data = params + '';
+      contentType = 'application/json';
+      data = JSON.stringify(input);
     }
-    return this;
+    this.req = this.client.req('/v1/algo/' + this.algo_path, 'POST', data, {
+      'Content-Type': contentType
+    }, (function(_this) {
+      return function(response, status) {
+        return _this.callback(new AlgoResponse(response, status));
+      };
+    })(this));
+    return this.promise;
   };
 
-  Algorithm.prototype.then = function(callback) {
-    return this.client.req('algo/' + this.algo_path, 'POST', this.algo_data, {}, callback);
+  Algorithm.prototype.pipeJson = function(input) {
+    if (typeof input !== 'string') {
+      throw "Cannot convert " + (typeof input) + " to string";
+    }
+    this.req = this.client.req('/v1/algo/' + this.algo_path, 'POST', input, {
+      'Content-Type': 'application/json'
+    }, (function(_this) {
+      return function(response, status) {
+        return _this.callback(new AlgoResponse(response, status));
+      };
+    })(this));
+    return this.promise;
   };
 
   return Algorithm;
+
+})();
+
+AlgoResponse = (function() {
+  function AlgoResponse(response, status) {
+    this.status = status;
+    this.result = response.result;
+    this.error = response.error;
+    this.metadata = response.metadata;
+  }
+
+  AlgoResponse.prototype.get = function() {
+    if (this.error) {
+      throw "" + this.error.message;
+    }
+    switch (this.metadata.content_type) {
+      case "void":
+        return null;
+      case "text":
+      case "json":
+        return this.result;
+      case "binary":
+        return new Buffer(this.result, 'base64');
+      default:
+        throw "Unknown result content_type: " + this.metadata.content_type + ".";
+    }
+  };
+
+  return AlgoResponse;
 
 })();
 
@@ -229,10 +309,10 @@ Algorithm = (function() {
 Data = (function() {
   function Data(client, path) {
     this.client = client;
-    if (path.indexOf("data://") !== 0) {
-      throw "Supplied path is invalid.";
+    if (path.indexOf('data://') !== 0) {
+      throw 'Supplied path is invalid.';
     }
-    this.data_path = path.replace(/data\:\/\//, "");
+    this.data_path = path.replace(/data\:\/\//, '');
   }
 
   Data.prototype.putString = function(content, callback) {
@@ -240,7 +320,7 @@ Data = (function() {
     headers = {
       'Content-Type': 'text/plain'
     };
-    return this.client.req('data/' + this.data_path, 'PUT', content, headers, callback);
+    return this.client.req('/v1/data/' + this.data_path, 'PUT', content, headers, callback);
   };
 
   Data.prototype.putJson = function(content, callback) {
@@ -248,7 +328,7 @@ Data = (function() {
     headers = {
       'Content-Type': 'application/JSON'
     };
-    return this.client.req('data/' + this.data_path, 'PUT', content, headers, callback);
+    return this.client.req('/v1/data/' + this.data_path, 'PUT', content, headers, callback);
   };
 
   Data.prototype.getString = function(callback) {
@@ -256,7 +336,7 @@ Data = (function() {
     headers = {
       'Accept': 'text/plain'
     };
-    return this.client.req('data/' + this.data_path, 'GET', "", headers, callback);
+    return this.client.req('/v1/data/' + this.data_path, 'GET', '', headers, callback);
   };
 
   Data.prototype.getJson = function(callback) {
@@ -264,7 +344,7 @@ Data = (function() {
     headers = {
       'Accept': 'text/plain'
     };
-    return this.client.req('data/' + this.data_path, 'GET', "", headers, callback);
+    return this.client.req('/v1/data/' + this.data_path, 'GET', '', headers, callback);
   };
 
   return Data;
