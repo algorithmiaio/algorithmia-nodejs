@@ -9,8 +9,9 @@ defaultApiAddress = 'https://api.algorithmia.com/v1/'
 
 class AlgorithmiaClient
   constructor: (key, address) ->
-    @apiAddress = address || defaultApiAddress
+    @apiAddress = address || process.env.ALGORITHMIA_API || defaultApiAddress
 
+    key = key || process.env.ALGORITHMIA_API_KEY
     if key
       if key.indexOf('Simple ') == 0
         @apiKey = key
@@ -47,16 +48,10 @@ class AlgorithmiaClient
     options.headers = dheader
 
     # helper method to switch between http / https
-    request = (options, cb) ->
-      if options.protocol == "https:"
-        https.request(options, cb)
-      else if options.protocol == "http:"
-        http.request(options, cb)
-      else
-        console.error("Invalid api address " + options.path)
+    protocol = if options.protocol == "https:" then https else http
 
     # trigger call
-    req = request(options, (res) ->
+    httpRequest = protocol.request(options, (res) ->
       res.setEncoding 'utf8'
       chunks = []
 
@@ -82,24 +77,22 @@ class AlgorithmiaClient
       res
     )
 
-    req.write data
-    req.end()
+    httpRequest.write data
+    httpRequest.end()
+    return
 
 algorithmia = {
-  # default api key and address
-  apiKey: null
-  apiAddress: defaultApiAddress
 
   client: (key, address) ->
-    new AlgorithmiaClient(key || @apiKey, address || @apiAddress)
+    new AlgorithmiaClient(key, address)
 
   # Convinience methods to use default client
   algo: (path) ->
-    @defaultClient = @defaultClient || new AlgorithmiaClient(apiKey, apiAddress)
+    @defaultClient = @defaultClient || new AlgorithmiaClient()
     @defaultClient.algo(path)
 
   file: (path) ->
-    @defaultClient = @defaultClient || new AlgorithmiaClient(apiKey, apiAddress)
+    @defaultClient = @defaultClient || new AlgorithmiaClient()
     @defaultClient.algo(path)
 }
 
