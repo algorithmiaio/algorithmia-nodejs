@@ -21,7 +21,7 @@ class Algorithm
       data = JSON.stringify(input)
 
     @req = @client.req(
-      'algo/' + @algo_path,
+      '/v1/algo/' + @algo_path,
       'POST',
       data,
       {'Content-Type': contentType},
