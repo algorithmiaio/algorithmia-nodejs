@@ -120,10 +120,12 @@ var processEvent = function(event, context) {
 /*
  * Algorithmia NodeJS SDK below
  */
-var Algorithm, AlgorithmiaClient, AlgoResponse, Data, algorithmia, https, url;
+var Algorithm, AlgorithmiaClient, AlgoResponse, Data, algorithmia, defaultApiAddress, http, https, packageJson, url;
 https = require('https');
 http = require('http');
 url = require('url');
+
+defaultApiAddress = 'https://api.algorithmia.com';
 
 AlgorithmiaClient = (function() {
   function AlgorithmiaClient(key, address) {
