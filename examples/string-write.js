@@ -13,7 +13,16 @@ var client = algorithmia.client(process.env.ALGORITHMIA_API_KEY);
 
 // === Create/Update file
 var content = "Hello this is a test";
-client.file("data://.my/TestCollection/foo.txt").putString(content, function(response) {
-	console.log(response);
+
+var f = client.file("data://.my/TestCollection/foo.txt");
+
+f.exists(function(exists) {
+    if(exists) {
+        console.log("File already existed. Overwriting.");
+    }
+    f.putString(content, function(response) {
+        console.log(response);
+    });
 });
+
 

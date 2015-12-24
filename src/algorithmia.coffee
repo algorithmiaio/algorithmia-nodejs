@@ -4,7 +4,7 @@ url = require('url')
 packageJson = require('../package.json')
 
 Algorithm = require('./algorithm.js')
-Data = require('./data.js')
+File = require('./file.js')
 
 defaultApiAddress = 'https://api.algorithmia.com'
 
@@ -27,7 +27,7 @@ class AlgorithmiaClient
 
   # file
   file: (path) ->
-    new Data(this, path)
+    new File(this, path)
 
   # internal http-helper
   req: (path, method, data, cheaders, callback) ->
