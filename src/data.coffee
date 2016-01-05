@@ -17,8 +17,8 @@ class Data
     @data_path.slice(@data_path.lastIndexOf('/')+1)
 
   parent: () ->
-    i = @data_path.lastIndexOf('/')
-    if i>=0 then new Dir(@client, 'data://' + @data_path.slice(0,i)) else null
+    offset = @data_path.lastIndexOf('/')
+    if offset>=0 then new Dir(@client, 'data://' + @data_path.slice(0,offset)) else null
 
 
 module.exports = exports = Data
