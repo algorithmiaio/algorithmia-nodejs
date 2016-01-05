@@ -2,6 +2,8 @@
 # Data.coffee
 #
 
+# Dir = require('./dir.js')
+
 class Data
   constructor: (client, path) ->
     @client = client
@@ -11,13 +13,13 @@ class Data
 
     @data_path = path.replace /data\:\/\//, ''
 
-  # This is similar to node's fs.exists function
-  exists: (callback) ->
-    headers =
-      'Content-Type': 'text/plain'
-      'Accept': 'text/plain'
-    @client.req('/v1/data/' + @data_path, 'HEAD', '', headers, (response, status) ->
-      if status == 200 then callback(true) else callback(false)
-    )
+  basename: () ->
+    @data_path.slice(@data_path.lastIndexOf('/')+1)
+
+  parent: () ->
+    i = @data_path.lastIndexOf('/')
+    if i>=0 then new Dir(@client, 'data://' + @data_path.slice(0,i)) else null
+
 
 module.exports = exports = Data
+Dir = require('./dir.js') # Delay circular-reference init

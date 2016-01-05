@@ -5,6 +5,7 @@ packageJson = require('../package.json')
 
 Algorithm = require('./algorithm.js')
 File = require('./file.js')
+Dir = require('./dir.js')
 
 defaultApiAddress = 'https://api.algorithmia.com'
 
@@ -29,13 +30,17 @@ class AlgorithmiaClient
   file: (path) ->
     new File(this, path)
 
+  # dir
+  dir: (path) ->
+    new Dir(this, path)
+
   # internal http-helper
   req: (path, method, data, cheaders, callback) ->
 
     # default header
     dheader =
-      'Content-Type': 'application/JSON'
-      'Accept': 'application/JSON'
+      'Content-Type': 'application/json'
+      'Accept': 'application/json'
       'User-Agent': 'algorithmia-nodejs/' + packageJson.version + ' (NodeJS ' + process.version + ')'
     if @apiKey
       dheader['Authorization'] = @apiKey
@@ -63,7 +68,7 @@ class AlgorithmiaClient
       res.on 'end', ->
         buff = chunks.join('')
 
-        if (dheader['Accept'] == 'application/JSON')
+        if (dheader['Accept'] == 'application/json')
           body = JSON.parse(buff)
         else
           body = buff
@@ -73,13 +78,16 @@ class AlgorithmiaClient
             if !body
               body = {}
             if !body.error
-              body.error = message: 'HTTP Response: ' + res.statusCode
+              if res.headers['x-error-message']
+                body.error = message: res.headers['x-error-message']
+              else
+                body.error = message: 'HTTP Response: ' + res.statusCode
           callback body, res.statusCode
         return
       res
     )
-
-    httpRequest.write data
+    if options.method != 'HEAD'
+      httpRequest.write data
     httpRequest.end()
     return
 

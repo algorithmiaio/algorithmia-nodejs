@@ -13,16 +13,45 @@ var client = algorithmia.client(process.env.ALGORITHMIA_API_KEY);
 
 // === Create/Update file
 var content = "Hello this is a test";
-
 var f = client.file("data://.my/TestCollection/foo.txt");
 
-f.exists(function(exists) {
-    if(exists) {
-        console.log("File already existed. Overwriting.");
-    }
+var writeFile = function() {
+    console.log("Writing file...")
     f.putString(content, function(response) {
         console.log(response);
     });
+};
+
+// Check if parent directory exists
+f.parent().exists(function(dirExists, dirStatus, dirResponse) {
+    if(!dirExists) {
+        console.log("Creating directory: " + f.parent().data_path);
+        f.parent().create(function() {
+            writeFile();
+        });
+    } else {
+
+        // It's not necessary to check if a file exists if you want to blindly overwrite it
+        // but this is exercising a bit more surface area of the client
+        f.exists(function(exists, fileStatus, fileResponse) {
+            if(exists) {
+                console.log("Explicitly deleting existing file...");
+                f.delete(function(response, status) {
+                    if(response.error) {
+                        console.log("Error deleting file. Will ignore and overwrite it anyway...")
+                    } else {
+                        console.log("Successfully deleted file. Ready to write new file...")
+                    }
+                    writeFile();
+                });
+            } else {
+                writeFile();
+            }
+        });
+    }
+
 });
+
+
 
 
