@@ -4,8 +4,6 @@
 	Example shows how to create/update a string file using Algorithmia's DataAPI.
 	The below example will create the file if it does not already exist, and update
 	it if it's already there.
-
-	**Note** that the code will fail if the collection 'TestCollection' does not already exist.
 */
 
 var algorithmia = require("../lib/algorithmia.js");
