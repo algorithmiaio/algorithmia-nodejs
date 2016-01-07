@@ -149,19 +149,19 @@ class DirListing
             else if @page == null
                 @loadNextPage( => @iterator().next(cb) )
             else
-                dl = @page.folders?.length || 0
-                fl = @page.files?.length || 0
-                if @offset < dl
-                    d = @page.folders[@offset]
+                dirCount = @page.folders?.length || 0
+                fileCount = @page.files?.length || 0
+                if @offset < dirCount
+                    dir = @page.folders[@offset]
                     @offset++
-                    cb(null, new Dir(@client, 'data://' + @data_path + '/' + d.name))
-                else if @offset < dl + fl
-                    f = @page.files[@offset]
+                    cb(null, new Dir(@client, 'data://' + @data_path + '/' + dir.name))
+                else if @offset < dirCount + fileCount
+                    file = @page.files[@offset]
                     @offset++
-                    nextResult = new File(@client, 'data://' + @data_path + '/' + f.filename)
+                    nextResult = new File(@client, 'data://' + @data_path + '/' + file.filename)
                     # augment File with a few extra fields
-                    nextResult.last_modified = f.last_modified
-                    nextResult.size = f.size
+                    nextResult.last_modified = file.last_modified
+                    nextResult.size = file.size
                     cb(null, nextResult)
                 else if @page.marker
                     @loadNextPage( => @iterator().next(cb) )
