@@ -68,7 +68,7 @@ class AlgorithmiaClient
         buff = chunks.join('')
 
         if (dheader['Accept'] == 'application/json')
-          body = JSON.parse(buff)
+          body = if buff == '' then {} else JSON.parse(buff)
         else
           body = buff
 

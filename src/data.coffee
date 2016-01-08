@@ -67,9 +67,10 @@ class Dir extends Data
   create: (callback) ->
     content =
         name: @basename()
-    headers =
-      'Accept': 'text/plain'
     @client.req('/v1/data/' + @parent().data_path, 'POST', JSON.stringify(content), headers, callback)
+
+  file: (filename) ->
+    new File('data://' + @data_path + '/' + filename)
 
   iterator: () ->
     listing = new DirListing(@client, @data_path)
