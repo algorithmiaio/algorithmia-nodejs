@@ -1,7 +1,7 @@
 algorithmia.js
 ==============
 
-A nodejs library for calling algorithms on Algorithmia.com with partial support fo the DataAPI
+A nodejs library for calling algorithms on Algorithmia.com with partial support for the DataAPI
 
 
 Usage
@@ -53,13 +53,14 @@ Build
 
 Currently tested with nodejs v0.10.36
 
-    # install dev dependencies and gulp-cli wrapper
-    npm install
-    npm install -g gulp-cli
+```bash
+# install dev dependencies and gulp-cli wrapper
+npm install
+npm install -g gulp-cli
 
-    # compile coffeescript
-    gulp
-
+# compile coffeescript
+gulp
+```
 
 TODO
 =====
