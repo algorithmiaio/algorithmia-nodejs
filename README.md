@@ -48,10 +48,11 @@ client.file("data://.my/Test/foo.txt").putString(content, function(response) {
 
 See /examples for more.
 
-Build
-=====
 
-Currently tested with nodejs v0.10.36
+Building the client
+===================
+
+This project uses gulp to compile coffeescript.
 
 ```bash
 # install dev dependencies and gulp-cli wrapper
@@ -62,7 +63,3 @@ npm install -g gulp-cli
 gulp
 ```
 
-TODO
-=====
-    * Add tests
-    * Support DataAPI directory functions
