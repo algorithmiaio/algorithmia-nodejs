@@ -39,12 +39,14 @@ class File extends Data
   getString: (callback) ->
     headers =
       'Accept': 'text/plain'
+      'Content-Type': 'text/plain'
     @client.req('/v1/data/' + @data_path, 'GET', '', headers, callback)
 
   # get json
   getJson: (callback) ->
     headers =
       'Accept': 'application/json'
+      'Content-Type': 'text/plain'
     @client.req('/v1/data/' + @data_path, 'GET', '', headers, callback)
 
   exists: (callback) ->
