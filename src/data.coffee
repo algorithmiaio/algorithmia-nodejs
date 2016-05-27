@@ -6,9 +6,6 @@ class Data
   constructor: (client, path) ->
     @client = client
 
-    if path.indexOf('data://') != 0
-      throw 'Supplied path is invalid.'
-
     @data_path = path.replace /data\:\/\//, ''
 
   basename: () ->
