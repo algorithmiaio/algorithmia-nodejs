@@ -5,7 +5,7 @@ A nodejs library for calling algorithms on Algorithmia.com with partial support 
 
 [![npm](https://img.shields.io/npm/v/algorithmia.svg?maxAge=2592000)]()
 
-## Installation
+## Getting started
 
 The official Algorithmia nodejs client is available on NPM.
 Install it for your project by adding `algorithmia` to your package.json:
@@ -14,9 +14,7 @@ Install it for your project by adding `algorithmia` to your package.json:
 npm install --save algorithmia
 ```
 
-## Authentication
-
-First, create an Algorithmia client:
+Then instantiate an Algorithmia client using your API key:
 
 ```javascript
 var algorithmia = require("algorithmia");
@@ -26,7 +24,7 @@ var client = algorithmia(process.env.ALGORITHMIA_API_KEY);
 
 Now you are ready to call algorithms.
 
-## Calling Algorithms
+## Calling algorithms
 
 The following examples of calling algorithms are organized by type of input/output which vary between algorithms.
 
@@ -234,7 +232,6 @@ Edit `.coffee` files in `src` and build the `lib` directory by running:
 npm install
 npm install -g gulp-cli
 
-# compile coffeescript
 gulp
 ```
 
