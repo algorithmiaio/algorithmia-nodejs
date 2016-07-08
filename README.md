@@ -224,9 +224,7 @@ client.dir("dropbox://Public").forEachFile(function(err, file) {
 
 ## Building the client
 
-Don't edit the .js in the lib directory.
 This project uses gulp to compile coffeescript.
-Edit `.coffee` files in `src` and build the `lib` directory by running:
 
 ```bash
 npm install
@@ -234,4 +232,7 @@ npm install -g gulp-cli
 
 gulp
 ```
+
+Note: Don't edit the .js in the `lib` directory; they will get overwritten on subsequent compiles.
+Instead, modify `.coffee` files in the `src` dir, and run `gulp`.
 
