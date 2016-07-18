@@ -1,6 +1,8 @@
 #
 # Data.coffee
 #
+path = require('path')
+fs = require('fs')
 
 class Data
   constructor: (client, path) ->
@@ -20,26 +22,44 @@ class Data
 # File objects in the Algorithmia Data API
 #
 class File extends Data
-  # put string
+
+  # put any content
+  put: (content, callback) ->
+    headers =
+      'Content-Type': null
+    @client.req('/v1/data/' + @data_path, 'PUT', content, headers, callback)
+
+  # download file
+  get: (callback) ->
+    headers =
+      'Accept': 'application/octet-stream'
+    innerCb = (response, status) ->
+      err = if (typeof response == 'object' && response?.error) then response.error else null
+      data = if (err == null) then response else null
+      callback(err, data)
+
+    @client.req('/v1/data/' + @data_path, 'GET', '', headers, innerCb)
+
+  # deprecated. use `put(content, callback)` instead
   putString: (content, callback) ->
     headers =
       'Content-Type': 'text/plain'
     @client.req('/v1/data/' + @data_path, 'PUT', content, headers, callback)
 
-  # put json
+  # deprecated. use `put(JSON.stringify(content), callback)` instead
   putJson: (content, callback) ->
     headers =
       'Content-Type': 'application/json'
     @client.req('/v1/data/' + @data_path, 'PUT', content, headers, callback)
 
-  # get string
+  # deprecated. use `get(function(err, data){...})` instead
   getString: (callback) ->
     headers =
       'Accept': 'text/plain'
       'Content-Type': 'text/plain'
     @client.req('/v1/data/' + @data_path, 'GET', '', headers, callback)
 
-  # get json
+  # deprecated. use `get(function(err, data){ var obj = JSON.parse(data) })`
   getJson: (callback) ->
     headers =
       'Accept': 'application/json'
@@ -70,6 +90,11 @@ class Dir extends Data
 
   file: (filename) ->
     new File('data://' + @data_path + '/' + filename)
+
+  putFile: (filePath, callback) ->
+    buffer = fs.readFileSync(filePath)
+    filename = path.basename(filePath)
+    @file(filename).put(buffer, callback)
 
   iterator: () ->
     listing = new DirListing(@client, @data_path)

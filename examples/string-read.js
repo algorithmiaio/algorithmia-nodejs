@@ -10,7 +10,10 @@ var algorithmia = require("../lib/algorithmia.js");
 var client = algorithmia.client(process.env.ALGORITHMIA_API_KEY);
 
 
-client.file("data://.my/TestCollection/foo.txt").getString(function(response) {
+client.file("data://.my/TestCollection/foo.txt").get(function(err, response) {
+	if(err) {
+		return console.log("ERROR: " + err.message);
+	}
 	console.log(response);
 });
 

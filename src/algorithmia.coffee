@@ -58,19 +58,24 @@ class AlgorithmiaClient
 
     # trigger call
     httpRequest = protocol.request(options, (res) ->
-      res.setEncoding 'utf8'
+      accept = dheader['Accept']
+      if accept == 'application/json' || accept == 'text/plain'
+        res.setEncoding 'utf8'
+
       chunks = []
 
       res.on 'data', (chunk) ->
         chunks.push chunk
 
       res.on 'end', ->
-        buff = chunks.join('')
-
-        if (dheader['Accept'] == 'application/json')
+        ct = res.headers['content-type'] || accept
+        if ct.startsWith('application/json')
+          buff = chunks.join('')
           body = if buff == '' then {} else JSON.parse(buff)
+        else if ct.startsWith('text/plain')
+          body = chunks.join('')
         else
-          body = buff
+          body = Buffer.concat(chunks)
 
         if callback
           if res.statusCode < 200 || res.statusCode >= 300

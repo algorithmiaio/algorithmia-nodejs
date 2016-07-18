@@ -135,21 +135,29 @@ robots.create(function(response) {
 
 ### Upload files to a directory
 
-Upload files by calling a `put` method on a `File` object:
+Upload files by calling the `putFile` method a `Dir` object or `put` on a `File` object:
 
 ```javascript
 var robots = client.dir("data://.my/robots");
-robots.file("Optimus_Prime.txt")
-    .putString("Leader of the Autobots", function(response) {
-        if(response.error) {
-            return console.log("Failed to upload file: " + response.error.message);
-        }
-        console.log("File uploaded.");
-    );
+robots.putFile("/path/to/Optimus_Prime.png", function(response) {
+    if(response.error) {
+        return console.log("Failed to upload file: " + response.error.message);
+    }
+    console.log("File uploaded.");
+);
 ```
 
-Note: [Issue #4](https://github.com/algorithmiaio/algorithmia-nodejs/issues/4)
-is tracking better support for uploading files, including binary files.
+You can also write to a `File` using the `put` method with either a `string` or `Buffer` as input:
+
+```javascript
+var prime = client.file("data://.my/robots/Optimus_Prime.txt");
+prime.put("Leader of the Autobots", function(response) {
+    if(response.error) {
+        return console.log("Failed to upload file: " + response.error.message);
+    }
+    console.log("File uploaded.");
+);
+```
 
 ### Download content from files
 
@@ -159,19 +167,16 @@ Download files by calling `getString` or  `getJson` on a `File` object:
 var robots = client.dir("data://.my/robots");
 
 // Get the file's contents as a string
-robots.file("T-800.txt").getString(function(response) {
-    console.log(response);
+robots.file("T-800.txt").get(function(err, data) {
+    console.log(data);
 });
 
-// Get a JSON file's contents as a JS object
-robots.file("T-800.json").getJson(function(response) {
-    console.log(response);
+// Get a binary file's contents as a buffer
+robots.file("T-800.jpg").getJson(function(err, data) {
+    console.log("Received " + data.length + " bytes.");
+    fs.writeFileSync("/tmp/T-800.jpg", data);
 });
 ```
-
-Note: [Issue #4](https://github.com/algorithmiaio/algorithmia-nodejs/issues/4)
-is tracking better support for downloading files, including binary files.
-
 
 ### Delete files and directories
 

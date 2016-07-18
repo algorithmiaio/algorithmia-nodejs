@@ -15,7 +15,7 @@ var f = client.file("data://.my/TestCollection/foo.txt");
 
 var writeFile = function() {
     console.log("Writing file...")
-    f.putString(content, function(response) {
+    f.put(content, function(response) {
         console.log(response);
     });
 };
