@@ -12,22 +12,21 @@ var algorithmia = require("../lib/algorithmia.js"),
 var client = algorithmia.client(process.env.ALGORITHMIA_API_KEY);
 
 // === Create/Update file
+var d = client.dir("data://.my/TestCollection");
 var imageIn = __dirname+"/theoffice.jpg";
-var buffer = fs.readFileSync(imageIn);
-var f = client.file("data://.my/TestCollection/theoffice.jpg");
 
 var writeFile = function() {
     console.log("Writing file...")
-    f.put(buffer, function(response) {
+    d.putFile(imageIn, function(response) {
         console.log(response);
     });
 };
 
 // Check if parent directory exists
-f.parent().exists(function(dirExists, dirStatus, dirResponse) {
+d.exists(function(dirExists, dirStatus, dirResponse) {
     if(!dirExists) {
-        console.log("Creating directory: " + f.parent().data_path);
-        f.parent().create(function() {
+        console.log("Creating directory: " + d.data_path);
+        d.parent().create(function() {
             writeFile();
         });
     } else {

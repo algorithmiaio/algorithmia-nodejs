@@ -7,7 +7,6 @@ fs = require('fs')
 class Data
   constructor: (client, path) ->
     @client = client
-
     @data_path = path.replace /data\:\/\//, ''
 
   basename: () ->
@@ -89,12 +88,13 @@ class Dir extends Data
     @client.req('/v1/data/' + @parent().data_path, 'POST', JSON.stringify(content), headers, callback)
 
   file: (filename) ->
-    new File('data://' + @data_path + '/' + filename)
+    new File(@client, 'data://' + @data_path + '/' + filename)
 
   putFile: (filePath, callback) ->
-    buffer = fs.readFileSync(filePath)
     filename = path.basename(filePath)
-    @file(filename).put(buffer, callback)
+    fs.readFile(filePath, (err, data) =>
+      @file(filename).put(data, callback)
+    )
 
   iterator: () ->
     listing = new DirListing(@client, @data_path)
