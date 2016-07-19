@@ -161,18 +161,18 @@ prime.put("Leader of the Autobots", function(response) {
 
 ### Download content from files
 
-Download files by calling `getString` or  `getJson` on a `File` object:
+Download files by calling `get` on a `File` object:
 
 ```javascript
 var robots = client.dir("data://.my/robots");
 
-// Get the file's contents as a string
+// Get a text file's contents as a string
 robots.file("T-800.txt").get(function(err, data) {
     console.log(data);
 });
 
-// Get a binary file's contents as a buffer
-robots.file("T-800.jpg").getJson(function(err, data) {
+/// Get a binary file's contents as a Buffer
+robots.file("T-800.jpg").get(function(err, data) {
     console.log("Received " + data.length + " bytes.");
     fs.writeFileSync("/tmp/T-800.jpg", data);
 });
