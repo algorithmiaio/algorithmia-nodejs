@@ -85,6 +85,8 @@ class Dir extends Data
   create: (callback) ->
     content =
         name: @basename()
+    headers =
+      'Content-Type': 'application/json'
     @client.req('/v1/data/' + @parent().data_path, 'POST', JSON.stringify(content), headers, callback)
 
   file: (filename) ->
