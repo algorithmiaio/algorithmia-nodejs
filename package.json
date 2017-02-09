@@ -1,6 +1,6 @@
 {
   "name": "algorithmia",
-  "version": "0.3.7",
+  "version": "0.3.8",
   "description": "Client library for calling algorithms in the Algorithmia marketplace",
   "url": "http://github.com/algorithmiaio/algorithmia-nodejs",
   "main": "./lib/algorithmia.js",
