@@ -38,8 +38,6 @@ class AlgorithmiaClient
 
     # default header
     dheader =
-      'Content-Type': 'application/json'
-      'Accept': 'application/json'
       'User-Agent': 'algorithmia-nodejs/' + packageJson.version + ' (NodeJS ' + process.version + ')'
     if @apiKey
       dheader['Authorization'] = @apiKey
