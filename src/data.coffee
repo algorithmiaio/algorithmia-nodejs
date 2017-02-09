@@ -24,8 +24,7 @@ class File extends Data
 
   # put any content
   put: (content, callback) ->
-    headers =
-      'Content-Type': null
+    headers = {}
     @client.req('/v1/data/' + @data_path, 'PUT', content, headers, callback)
 
   # download file
@@ -55,19 +54,16 @@ class File extends Data
   getString: (callback) ->
     headers =
       'Accept': 'text/plain'
-      'Content-Type': 'text/plain'
     @client.req('/v1/data/' + @data_path, 'GET', '', headers, callback)
 
   # deprecated. use `get(function(err, data){ var obj = JSON.parse(data) })`
   getJson: (callback) ->
     headers =
       'Accept': 'application/json'
-      'Content-Type': 'text/plain'
     @client.req('/v1/data/' + @data_path, 'GET', '', headers, callback)
 
   exists: (callback) ->
     headers =
-      'Content-Type': 'text/plain'
       'Accept': 'text/plain'
     @client.req('/v1/data/' + @data_path, 'HEAD', '', headers, (response, status) ->
       if status == 200 then callback(true) else callback(false, status, response)
@@ -119,8 +115,7 @@ class Dir extends Data
             callback(err, item)
 
   exists: (callback) ->
-    headers =
-      'Content-Type': 'text/plain'
+    headers = {}
     @client.req('/v1/data/' + @data_path, 'GET', '', headers, (response, status) ->
       if status == 200 then callback(true) else callback(false, status, response)
     )
@@ -143,8 +138,7 @@ class DirListing
         @page = null
 
     loadNextPage: (cb) ->
-        headers =
-            'Content-Type': 'text/plain'
+        headers = {}
         query = if @page == null then '' else "?marker=#{encodeURIComponent(@page.marker)}"
         @client.req('/v1/data/' + @data_path + query, 'GET', '', headers, (response, status) =>
             @offset = 0
