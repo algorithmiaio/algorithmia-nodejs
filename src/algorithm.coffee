@@ -25,7 +25,7 @@ class Algorithm
       'POST',
       data,
       {'Content-Type': contentType},
-      (response, status) => @callback(new AlgoResponse(response, status))
+      (response, status) => @callback?(new AlgoResponse(response, status))
     )
 
     @promise
