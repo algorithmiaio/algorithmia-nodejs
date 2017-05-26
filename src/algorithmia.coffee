@@ -88,6 +88,12 @@ class AlgorithmiaClient
         return
       res
     )
+    httpRequest.on 'error', (err) ->
+      body = error: { message: err.message }
+
+      if callback
+        callback body, 500
+      return
     if options.method != 'HEAD'
       httpRequest.write data
     httpRequest.end()
