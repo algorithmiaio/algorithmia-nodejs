@@ -1,7 +1,7 @@
 /*
-	dir-list.js
+	dir-make-del.js
 
-	Example shows how to iterate over contents of a directory using Algorithmia's DataAPI.
+	Example shows how to create and delet a directory using Algorithmia's DataAPI.
 
 */
 
