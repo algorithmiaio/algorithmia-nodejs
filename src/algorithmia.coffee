@@ -66,14 +66,15 @@ class AlgorithmiaClient
         chunks.push chunk
 
       res.on 'end', ->
-        ct = res.headers['content-type'] || accept
-        if ct.startsWith('application/json')
-          buff = chunks.join('')
-          body = if buff == '' then {} else JSON.parse(buff)
-        else if ct.startsWith('text/plain')
-          body = chunks.join('')
-        else
-          body = Buffer.concat(chunks)
+        ct = res.headers['content-type']
+        if typeof ct == 'string'
+          if ct.startsWith('application/json')
+            buff = chunks.join('')
+            body = if buff == '' then {} else JSON.parse(buff)
+          else if ct.startsWith('text/plain')
+            body = chunks.join('')
+          else
+            body = Buffer.concat(chunks)
 
         if callback
           if res.statusCode < 200 || res.statusCode >= 300
