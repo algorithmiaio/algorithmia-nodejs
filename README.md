@@ -241,3 +241,8 @@ gulp
 Note: Don't edit the .js in the `lib` directory; they will get overwritten on subsequent compiles.
 Instead, modify `.coffee` files in the `src` dir, and run `gulp`.
 
+Testing (kinda) is currently achieved by running this bash loop and checking for error messages.
+
+```
+for f in examples/*.js; do node $f; done
+```
