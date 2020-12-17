@@ -9,7 +9,7 @@
   "keywords": [],
   "scripts": {
     "compile": "tsc",
-    "test": "jest --config ./jest.config.ts"
+    "test": "jest --detectOpenHandles --config ./jest.config.ts"
   },
   "devDependencies": {
     "@babel/core": "^7.12.8",

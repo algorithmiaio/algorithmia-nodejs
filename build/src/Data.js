@@ -58,7 +58,7 @@ class DataDir extends Data {
         return this.client.head(this.path);
     }
     delete(force) {
-        return this.client.delete(this.path + '/?force=' + force);
+        return this.client.delete(this.path + '?force=' + force);
     }
 }
 exports.DataDir = DataDir;

@@ -75,7 +75,7 @@ class DataDir extends Data {
     }
 
     delete(force: Boolean) {
-        return this.client.delete(this.path + '/?force=' + force)
+        return this.client.delete(this.path + '?force=' + force)
     }
 
 }

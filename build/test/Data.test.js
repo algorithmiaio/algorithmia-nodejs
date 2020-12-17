@@ -64,44 +64,43 @@ describe("Localisation initialization", () => {
     });
     describe('algorithm directory get call', () => {
         it('gets dir', async () => {
-            let dir = Algorithmia_1.Algorithmia.getClient(process.env.ALGORITHMIA_DEFAULT_API_KEY).dir('data://dherring/DalesNotSoFunTime2');
-            await dir.get().then(x => { let dataList = JSON.parse(x); assert_1.strict(dataList.files.length == 1); });
+            let dir = Algorithmia_1.Algorithmia.getClient(process.env.ALGORITHMIA_DEFAULT_API_KEY).dir('data://dherring/DalesFunTime');
+            await dir.get().then(x => { let dataList = JSON.parse(x); assert_1.strict.equal(dataList.files.length, 6); });
         });
     });
     describe('algorithm directory post call', () => {
         it('creates dir', async () => {
-            let dir = Algorithmia_1.Algorithmia.getClient(process.env.ALGORITHMIA_DEFAULT_API_KEY).dir('data://dherring');
+            let dir = Algorithmia_1.Algorithmia.getClient(process.env.ALGORITHMIA_DEFAULT_API_KEY).dir('data://dherring/DalesNotSoFunTime3');
             await dir.exists().then(x => {
                 if (x == true) {
                     dir.delete(true);
                 }
             });
-            await dir.post('DalesNotSoFunTime3').then(x => { assert_1.strict.equal(JSON.parse(x), 'data://dherring/DalesNotSoFunTime3'); });
+            await dir.post('DalesNotSoFunTime3');
+            expect(dir.exists().then(x => { return x; }));
         });
     });
-    /*
     describe('algorithm directory file put call', () => {
-        it('puts file', () => {
-            let dir: DataDir = Algorithmia.getClient(process.env.ALGORITHMIA_DEFAULT_API_KEY).dir('data://dherring/DalesNotSoFunTime2');
-            let file: DataFile = dir.file('YeahDawg.txt');
-    
-            file.exists().then(x => {
+        it('puts file', async () => {
+            let dir = Algorithmia_1.Algorithmia.getClient(process.env.ALGORITHMIA_DEFAULT_API_KEY).dir('data://dherring/DalesNotSoFunTime2');
+            let file = dir.file('YeahDawg.txt');
+            await file.exists().then(x => {
                 if (x == true) {
                     file.delete();
                 }
-            })
-    
-            let expected = {"result":"data://dherring/DalesNotSoFunTime2/YeahDawg.txt"};
-            dir.put(file.baseName(), 'yeah dawg').then(x => { assert(x == expected) });
+            });
+            await dir.put(file.baseName(), 'yeah dawg');
+            expect(file.exists().then(x => { return x; }));
         });
     });
-    
     describe('algorithm directory delete call', () => {
-        it('deletes directory', () => {
-            let dir: DataDir = Algorithmia.getClient(process.env.ALGORITHMIA_DEFAULT_API_KEY).dir('data://dherring/DalesNotSoFunTime2');
-            let expected = {"result":{"deleted":2}};
-            dir.delete(true).then(x => { assert(x == JSON.stringify(expected)) });
+        it('deletes directory', async () => {
+            let dir = Algorithmia_1.Algorithmia.getClient(process.env.ALGORITHMIA_DEFAULT_API_KEY).dir('data://dherring');
+            await dir.post('DalesNotSoFunTime4');
+            let newDir = Algorithmia_1.Algorithmia.getClient(process.env.ALGORITHMIA_DEFAULT_API_KEY).dir('data://dherring/DalesNotSoFunTime4');
+            let expected = { "result": { "deleted": 1 } };
+            await newDir.delete(true).then(x => { assert_1.strict.equal(x, JSON.stringify(expected)); });
         });
-    });*/
+    });
 });
 //# sourceMappingURL=Data.test.js.map

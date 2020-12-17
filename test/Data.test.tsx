@@ -1,4 +1,4 @@
-import { AssertionError, strict as assert } from 'assert';
+import { strict as assert } from 'assert';
 import { Algorithmia } from '../src/Algorithmia';
 import { DataFile, DataDir, DataList } from '../src/Data';
 
@@ -73,8 +73,8 @@ describe("Localisation initialization", () => {
     
     describe('algorithm directory get call', () => {
         it('gets dir', async() => {
-            let dir: DataDir = Algorithmia.getClient(process.env.ALGORITHMIA_DEFAULT_API_KEY).dir('data://dherring/DalesNotSoFunTime2');
-            await dir.get().then(x => { let dataList: DataList = JSON.parse(x); assert(dataList.files.length == 2) });
+            let dir: DataDir = Algorithmia.getClient(process.env.ALGORITHMIA_DEFAULT_API_KEY).dir('data://dherring/DalesFunTime');
+            await dir.get().then(x => { let dataList: DataList = JSON.parse(x); assert.equal(dataList.files.length, 6) });
         });
     });
     
