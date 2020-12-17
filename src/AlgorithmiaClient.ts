@@ -52,6 +52,7 @@ class AlgorithmiaClient {
      dir(path : string): DataDir {
          return new DataDir(this.httpClient, this.defaultApiAddress + this.dataPrefix + path);
      }
+     
 
 }
 
