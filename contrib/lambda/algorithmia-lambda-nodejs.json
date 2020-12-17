@@ -1,0 +1,27 @@
+{
+  "lambda": {
+    "FunctionName": "algorithmia",
+    "Handler": "index.handler",
+    "Runtime": "nodejs",
+    "Description": "Run any algorithm in the Algorithmia marketplace.",
+    "MemorySize": 256,
+    "Timeout": 60
+  },
+  "eventSources": {
+    "s3": [{}]
+  },
+  "version": "1.0.2",
+  "build": "https://s3.amazonaws.com/algorithmia-lambda/algorgthmia-lambda-nodejs.zip",
+  "license": "MIT",
+  "tags": [
+    "nodejs",
+    "algorithms",
+    "backend",
+    "api",
+    "mobile"
+  ],
+  "authors": [
+    "Algorithmia <support@algorithmia.com> (https://www.algorithmia.com)"
+  ],
+  "private": false
+}

@@ -1,0 +1,36 @@
+#!/bin/bash
+
+set -e
+
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+TMP=$DIR/tmp/lambda
+
+function make_blueprint {
+  if [[ -n $1 ]]; then
+    local suffix="-$1"
+  fi
+  rm -rf "$TMP"
+
+  # Create the blueprint structure
+  mkdir -p $TMP
+  cp contrib/lambda/index${suffix}.js $TMP/
+  cd $TMP
+  npm install $DIR --prefix .
+
+  # Tweak User-Agent in the client
+  sed -i -e 's/\(User-Agent.*\)algorithmia-nodejs/\1 algorithmia-lambda/' $TMP/node_modules/algorithmia/lib/algorithmia.js
+
+  # Zip up the blueprint
+  zip -r algorithmia-lambda-nodejs${suffix}.zip .
+  mv algorithmia-lambda-nodejs${suffix}.zip ..
+
+  echo "-----------------------------"
+  echo "Finished packaging blueprint."
+  echo "Blueprint config: $DIR/contrib/lambda/algorithmia-lambda-nodejs${suffix}.json"
+  echo "Blueprint zip: algorithmia-lambda-nodejs${suffix}.zip"
+  cd $DIR
+}
+
+make_blueprint
+make_blueprint no-kms
+
