@@ -1,14 +1,18 @@
 {
-  "name": "algorithmia-nodets",
-  "version": "0.0.0",
-  "description": "",
+  "name": "algorithmia",
+  "version": "1.0.0",
+  "description": "Client library for calling algorithms in the Algorithmia marketplace",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "files": [
-    "build/src"
+    "lib/**/*"
   ],
   "license": "Apache-2.0",
   "keywords": [],
   "scripts": {
-    "compile": "tsc",
+    "build": "tsc",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test --detectOpenHandles",
     "test": "jest --config ./jest.config.ts"
   },
   "devDependencies": {

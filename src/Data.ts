@@ -1,4 +1,5 @@
 import { HttpClient } from './HttpClient';
+import { ContentTypeHelper } from './ContentTypeHelper';
 
 abstract class Data {
 
@@ -17,7 +18,7 @@ abstract class Data {
     parent(): DataDir | null {
         const offset = this.path.lastIndexOf('/');
         if (offset >= 0) {
-            return new DataDir(this.client, 'data://' + this.path.slice(0, offset));
+            return new DataDir(this.client, `data://${this.path.slice(0, offset)}`);
         }
         else {
             return null;
@@ -55,7 +56,7 @@ class DataFile extends Data {
 class DataDir extends Data {
 
     file(fileName: string) {
-        return new DataFile(this.client, 'data://' + this.path + '/' + fileName)
+        return new DataFile(this.client, `data://${this.path}/${fileName}`);
     }
 
     get() {
@@ -67,7 +68,12 @@ class DataDir extends Data {
     }
 
     post(input: string) {
-        return this.client.post(this.path, input);
+        let contentTypeHelper: ContentTypeHelper = new ContentTypeHelper;
+        let contentType: string;
+
+        contentType = contentTypeHelper.contentTypeHelper(input);
+
+        return this.client.post(this.path, input, contentType);
     }
 
     exists() {
@@ -75,7 +81,7 @@ class DataDir extends Data {
     }
 
     delete(force: Boolean) {
-        return this.client.delete(this.path + '/?force=' + force)
+        return this.client.delete(`${this.path}?force=${force}`)
     }
 
 }

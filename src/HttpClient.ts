@@ -1,15 +1,17 @@
-import * as hC from 'typed-rest-client/HttpClient';
+import { HttpClient as TypedHttpClient } from 'typed-rest-client/HttpClient';
+import { IHeaders } from 'typed-rest-client/Interfaces';
 
 class HttpClient {
 
     private key: string;
-    private headers: Object;
-    private httpClient: hC.HttpClient;
+    private userAgent = '{User-Agent : algorithmia-nodejs/' + process.env.npm_package_version + ' (NodeJS ' + process.version + ')}';
+    private headers: IHeaders = {};
+    private httpClient: TypedHttpClient;
 
     public constructor(key: string) {
         this.key = key;
-        this.headers = { 'Authorization': this.key, 'Content-Type': 'application/json' };
-        this.httpClient = new hC.HttpClient('');
+        this.headers['Authorization'] = this.key;
+        this.httpClient = new TypedHttpClient(this.userAgent);
     }
 
     async get(path: string) {
@@ -18,16 +20,12 @@ class HttpClient {
 
     async head(path: string) {
         return await this.httpClient.head(path, this.headers).then(x => {
-            if (x.message.statusCode == 200) {
-                return true;
-            }
-            else {
-                return false;
-            }
+            return x.message.statusCode === 200;
         });
     }
 
-    async post(path: string, data: Object) {
+    async post(path: string, data: Object, contentType: string) {
+        this.headers['Content-Type'] = contentType;
         return await this.httpClient.post(path, JSON.stringify(data), this.headers).then(x => { return x.readBody() });
     }
 

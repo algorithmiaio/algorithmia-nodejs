@@ -5,12 +5,10 @@
     "strict": true,
     "sourceMap": true,
     "rootDir": ".",
-    "outDir": "build"
+    "outDir": "./lib"
   },
   "include": [
     "src/**/*.ts",
-    "src/**/*.tsx",
     "test/**/*.ts",
-    "test/**/*.tsx"
   ]
 }

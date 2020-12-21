@@ -15,7 +15,7 @@ class AlgorithmiaClient {
         this.apiAddress = apiAddress || process.env.ALGORITHMIA_API_ADDRESS || this.defaultApiAddress;
         this.key = key || process.env.ALGORITHMIA_API_KEY || '';
         if (key) {
-            if (key.indexOf('Simple ') === 0) {
+            if (key.startsWith('Simple ')) {
                 this.key = key;
             } else {
                 this.key = 'Simple ' + key;

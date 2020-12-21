@@ -4,9 +4,6 @@ class Algorithmia {
 
     private static client: AlgorithmiaClient;
 
-    private constructor() {
-    }
-
     static getClient(key?: string, apiAddress?: string): AlgorithmiaClient {
         return new AlgorithmiaClient(key, apiAddress);
     }

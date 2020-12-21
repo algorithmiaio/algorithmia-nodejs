@@ -29,7 +29,7 @@ describe("Localisation initialization", () => {
                 }
             })
             await file.put('nah dawg');
-            expect(file.exists().then(x => { return x }));
+            expect(file.exists());
         });
     });
 
@@ -71,13 +71,6 @@ describe("Localisation initialization", () => {
         });
     });
     
-    describe('algorithm directory get call', () => {
-        it('gets dir', async() => {
-            let dir: DataDir = Algorithmia.getClient(process.env.ALGORITHMIA_DEFAULT_API_KEY).dir('data://dherring/DalesNotSoFunTime2');
-            await dir.get().then(x => { let dataList: DataList = JSON.parse(x); assert(dataList.files.length == 2) });
-        });
-    });
-    
     describe('algorithm directory post call', () => {
         it('creates dir', async() => {
             let dir: DataDir = Algorithmia.getClient(process.env.ALGORITHMIA_DEFAULT_API_KEY).dir('data://dherring/DalesNotSoFunTime3');
@@ -106,6 +99,13 @@ describe("Localisation initialization", () => {
     
             await dir.put(file.baseName(), 'yeah dawg');
             expect(file.exists().then(x => { return x }));
+        });
+    });
+
+    describe('algorithm directory get call', () => {
+        it('gets dir', async() => {
+            let dir: DataDir = Algorithmia.getClient(process.env.ALGORITHMIA_DEFAULT_API_KEY).dir('data://dherring/DalesFunTime');
+            await dir.get().then(x => { let dataList: DataList = JSON.parse(x); assert(dataList.files.length == 6) });
         });
     });
     

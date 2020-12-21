@@ -1,4 +1,5 @@
 import { HttpClient } from './HttpClient';
+import { ContentTypeHelper } from './ContentTypeHelper';
 
 class AlgorithmExecutable {
 
@@ -10,10 +11,23 @@ class AlgorithmExecutable {
     this.path = path;
   }
 
-  pipe(input: Object, output: string) {
-    return this.client.post(this.path + '/?output=' + output, input)
+  pipe(input: Object, version?: string, output = 'raw', stdout = false, timeout = 300) {
+    let contentTypeHelper: ContentTypeHelper = new ContentTypeHelper;
+    let contentType: string;
+
+    contentType = contentTypeHelper.contentTypeHelper(input);
+
+    if(version == undefined) {
+      return this.client.post(this.path + '/?output=' + output + '&stdout=' + stdout + '&timeout=' + timeout, input, contentType);
+    }
+    else {
+      return this.client.post(this.path + '/' + version + '/?output=' + output + '&stdout=' + stdout + '&timeout=' + timeout, input, contentType);
+    }
+    
   }
 }
+
+
 
 interface AlgoResponse {
   async?: Boolean;
