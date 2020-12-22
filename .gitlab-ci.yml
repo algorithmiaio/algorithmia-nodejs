@@ -11,6 +11,7 @@ variables:
 test:
   stage: test
   script:
-  - tsc
+  - npm install typescript -g
+  - npx tsc
   - if [ -z $ALGORITHMIA_DEFAULT_API_KEY ]; then echo "Algorithmia API key not defined"; exit 1; fi
   - npm test
