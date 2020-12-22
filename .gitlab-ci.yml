@@ -8,7 +8,7 @@ variables:
   DOCKER_DRIVER: overlay2
   RUNNING_ON_BUILD_SERVER: "true"
 
-test_async:
+test:
   stage: test
   script:
   - tsc
