@@ -44,7 +44,7 @@ describe("Localisation initialization", () => {
     
     describe('algorithm file get call', () => {
         it('gets for file', async(done) => {
-            let file: DataFile = Algorithmia.getClient(process.env.ALGORITHMIA_DEFAULT_API_KEY).file('data://dherring/DalesNotSoFunTime2/NahDawg.txt');
+            let file: DataFile = Algorithmia.getClient(process.env.ALGORITHMIA_DEFAULT_API_KEY).file('data://dherring/DalesFunTime/NahDawg.txt');
             await file.get().then(x => { assert.equal(JSON.parse(x), 'nah dawg' )});
             done();
         });
@@ -53,7 +53,7 @@ describe("Localisation initialization", () => {
     
     describe('algorithm file head call', () => {
         it('checks for file', async(done) => {
-            let file: DataFile = Algorithmia.getClient(process.env.ALGORITHMIA_DEFAULT_API_KEY).file('data://dherring/DalesNotSoFunTime2/NahDawg.txt');
+            let file: DataFile = Algorithmia.getClient(process.env.ALGORITHMIA_DEFAULT_API_KEY).file('data://dherring/DalesFunTime/NahDawg.txt');
             await file.exists().then(x => { assert.equal(x, true) });
             done();
         });
