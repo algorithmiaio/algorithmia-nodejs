@@ -45,7 +45,7 @@ describe("Localisation initialization", () => {
     describe('algorithm file get call', () => {
         it('gets for file', async(done) => {
             let file: DataFile = Algorithmia.getClient(process.env.ALGORITHMIA_DEFAULT_API_KEY).file('data://dherring/DalesFunTime/NahDawg.txt');
-            await file.get().then(x => { assert.equal(JSON.parse(x), 'nah dawg' )});
+            await file.get().then(x => { assert.equal(x, 'nah dawg' )});
             done();
         });
     });
@@ -113,7 +113,7 @@ describe("Localisation initialization", () => {
     describe('algorithm directory get call', () => {
         it('gets dir', async(done) => {
             let dir: DataDir = Algorithmia.getClient(process.env.ALGORITHMIA_DEFAULT_API_KEY).dir('data://dherring/DalesFunTime');
-            await dir.get().then(x => { let dataList: DataList = JSON.parse(x); assert(dataList.files.length == 6) });
+            await dir.get().then(x => { let dataList: DataList = JSON.parse(x); assert(dataList.files.length == 7) });
             done();
         });
     });
