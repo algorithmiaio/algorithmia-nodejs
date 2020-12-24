@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "**/src/**/*.ts",
+    "**/test/**/*.ts",
+  ],
+  "exclude": [
+    "node_modules",
+    "tmp",
+  ],
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true
+  }
+}

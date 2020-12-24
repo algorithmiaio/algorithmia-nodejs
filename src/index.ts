@@ -1,8 +1,13 @@
-export { Algorithmia } from '../src/Algorithmia';
-export { AlgorithmiaClient } from './AlgorithmiaClient';
-export { DataFile, DataDir, DataList } from '../src/Data';
-import { DataFile } from '../src/Data';
-import {Algorithmia } from '../src/Algorithmia';
+import { DataFile } from './Data';
+import { Algorithmia } from './Algorithmia';
 
-let file: DataFile = Algorithmia.getClient(process.env.ALGORITHMIA_DEFAULT_API_KEY).file('data://dherring/DalesFunTime/NahDawg.txt');
-            file.get().then(x => {console.log(x)});
+export { Algorithmia } from './Algorithmia';
+export { AlgorithmiaClient } from './AlgorithmiaClient';
+export { DataFile, DataDir, DataList } from './Data';
+
+const file: DataFile = Algorithmia.getClient(
+  process.env.ALGORITHMIA_DEFAULT_API_KEY
+).file('data://dherring/DalesFunTime/NahDawg.txt');
+file.get().then((x) => {
+  console.log(x);
+});
