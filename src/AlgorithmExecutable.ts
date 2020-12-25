@@ -1,5 +1,5 @@
 import { HttpClient } from './HttpClient';
-import { ContentTypeHelper } from './ContentTypeHelper';
+import { getContentType } from './common/utilities';
 
 class AlgorithmExecutable {
   private client: HttpClient;
@@ -10,17 +10,14 @@ class AlgorithmExecutable {
     this.path = path;
   }
 
-  pipe(
-    input: Object,
+  pipe<T = unknown>(
+    input: T,
     version?: string,
     output = 'raw',
     stdout = false,
     timeout = 300
   ) {
-    const contentTypeHelper: ContentTypeHelper = new ContentTypeHelper();
-    let contentType: string;
-
-    contentType = contentTypeHelper.contentTypeHelper(input);
+    const contentType = getContentType(input);
 
     if (version == undefined) {
       return this.client.post(
@@ -57,7 +54,7 @@ interface AlgoResponse {
   error?: Error;
   metadata?: MetaData;
   request_id?: string;
-  result?: string | Object;
+  result?: string | Record<string, unknown>;
 }
 
 interface Error {

@@ -1,5 +1,5 @@
 import { HttpClient } from './HttpClient';
-import { ContentTypeHelper } from './ContentTypeHelper';
+import { getContentType } from './common/utilities';
 
 abstract class Data {
   protected client: HttpClient;
@@ -62,10 +62,7 @@ class DataDir extends Data {
   }
 
   post(input: string) {
-    const contentTypeHelper: ContentTypeHelper = new ContentTypeHelper();
-    let contentType: string;
-
-    contentType = contentTypeHelper.contentTypeHelper(input);
+    const contentType = getContentType(input);
 
     return this.client.post(this.path, input, contentType);
   }
