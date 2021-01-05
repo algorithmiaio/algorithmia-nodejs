@@ -15,7 +15,7 @@
     "prepare": "npm run compile",
     "prepublishOnly": "npm test --detectOpenHandles",
     "lint": "eslint '*/**/*.{js,ts}' --quiet",
-    "lint:fix": "npm run lint --fix",
+    "lint:fix": "npm run lint -- --fix",
     "test": "jest"
   },
   "husky": {
