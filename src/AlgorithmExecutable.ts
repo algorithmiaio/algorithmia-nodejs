@@ -2,7 +2,6 @@ import { HttpClient } from './HttpClient';
 import { ContentTypeHelper } from './ContentTypeHelper';
 
 class AlgorithmExecutable {
-
   private client: HttpClient;
   private path: string;
 
@@ -11,41 +10,65 @@ class AlgorithmExecutable {
     this.path = path;
   }
 
-  pipe(input: Object, version?: string, output = 'raw', stdout = false, timeout = 300) {
-    let contentTypeHelper: ContentTypeHelper = new ContentTypeHelper;
+  pipe(
+    input: Object,
+    version?: string,
+    output = 'raw',
+    stdout = false,
+    timeout = 300
+  ) {
+    const contentTypeHelper: ContentTypeHelper = new ContentTypeHelper();
     let contentType: string;
 
     contentType = contentTypeHelper.contentTypeHelper(input);
 
-    if(version == undefined) {
-      return this.client.post(this.path + '/?output=' + output + '&stdout=' + stdout + '&timeout=' + timeout, input, contentType);
+    if (version == undefined) {
+      return this.client.post(
+        this.path +
+          '/?output=' +
+          output +
+          '&stdout=' +
+          stdout +
+          '&timeout=' +
+          timeout,
+        input,
+        contentType
+      );
+    } else {
+      return this.client.post(
+        this.path +
+          '/' +
+          version +
+          '/?output=' +
+          output +
+          '&stdout=' +
+          stdout +
+          '&timeout=' +
+          timeout,
+        input,
+        contentType
+      );
     }
-    else {
-      return this.client.post(this.path + '/' + version + '/?output=' + output + '&stdout=' + stdout + '&timeout=' + timeout, input, contentType);
-    }
-    
   }
 }
 
-
-
 interface AlgoResponse {
-  async?: Boolean;
+  async?: boolean;
   error?: Error;
   metadata?: MetaData;
-  request_id?: String;
-  result?: String | Object;
+  request_id?: string;
+  result?: string | Object;
 }
 
 interface Error {
-  message: String;
-  stacktrace: String;
+  message: string;
+  stacktrace: string;
 }
 
 interface MetaData {
-  content_type: String;
-  duration: String;
-  stdout: String;
+  content_type: string;
+  duration: string;
+  stdout: string;
 }
 
 export { AlgorithmExecutable, AlgoResponse };
