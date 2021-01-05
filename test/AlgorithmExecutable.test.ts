@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import { Algorithmia } from '../src/Algorithmia';
 
 describe('Localisation initialization', () => {
@@ -7,19 +6,22 @@ describe('Localisation initialization', () => {
   });
 
   describe('algorithm pipe call', () => {
-    it('invokes algorithm', async (done) => {
-      const input = {
-        user_file: 'data://dherring/DalesFunTime/SpongebobMockingApp.jpg',
-      };
+    it('invokes algorithm', async () => {
       const expected =
         'Before bytes -  14004 after bytes -  24776 result file path - {"imageSaveLocation":"data://dherring/DalesFunTime/save_location.png","rectsSaveLocation":"data://dherring/DalesFunTime/save_location.pngrects.txt"}';
-      Algorithmia.getClient(process.env.ALGORITHMIA_DEFAULT_API_KEY)
+
+      const result = await Algorithmia.getClient(
+        process.env.ALGORITHMIA_DEFAULT_API_KEY
+      )
         .algo('dherring/ResultFile')
-        .pipe(input, '0.5.37')
-        .then((x) => {
-          assert.equal(x, expected);
-        });
-      done();
+        .pipe(
+          {
+            user_file: 'data://dherring/DalesFunTime/SpongebobMockingApp.jpg',
+          },
+          '0.5.37'
+        );
+
+      expect(result).toBe(expected);
     });
   });
 });
