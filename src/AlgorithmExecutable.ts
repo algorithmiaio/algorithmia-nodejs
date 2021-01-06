@@ -1,5 +1,6 @@
 import { HttpClient } from './HttpClient';
 import { getContentType } from './ContentTypeHelper';
+import { URLSearchParams } from 'url';
 
 class AlgorithmExecutable {
   private client: HttpClient;
