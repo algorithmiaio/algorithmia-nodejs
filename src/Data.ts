@@ -1,5 +1,5 @@
 import { HttpClient } from './HttpClient';
-import { ContentTypeHelper } from './ContentTypeHelper';
+import { getContentType } from './ContentTypeHelper';
 
 abstract class Data {
   protected client: HttpClient;
@@ -29,11 +29,35 @@ abstract class Data {
  */
 class DataFile extends Data {
   get() {
-    return this.client.get(this.path);
+    const acceptHeader = 'application/octet-stream';
+    return this.client.get(this.path, acceptHeader);
+  }
+
+  getString() {
+    const acceptHeader = 'text/plain';
+    return this.client.get(this.path, acceptHeader);
+  }
+
+  getJson() {
+    const acceptHeader = 'application/json';
+    return this.client.get(this.path, acceptHeader);
+  }
+
+  getBinary() {
+    const acceptHeader = 'application/octet-stream';
+    return this.client.get(this.path, acceptHeader);
   }
 
   put(input: string) {
     return this.client.put(this.path, input);
+  }
+
+  putString(input: string) {
+    return this.client.put(this.path, input);
+  }
+
+  putJson(input: string) {
+    return this.client.putJson(this.path, input);
   }
 
   delete() {
@@ -54,18 +78,16 @@ class DataDir extends Data {
   }
 
   get() {
-    return this.client.get(this.path);
+    const acceptHeader = 'application/octet-stream';
+    return this.client.get(this.path, acceptHeader);
   }
 
   put(fileName: string, input: string) {
     return this.file(fileName).put(input);
   }
 
-  post(input: string) {
-    const contentTypeHelper: ContentTypeHelper = new ContentTypeHelper();
-    let contentType: string;
-
-    contentType = contentTypeHelper.contentTypeHelper(input);
+  create(input: string) {
+    const contentType = getContentType(input);
 
     return this.client.post(this.path, input, contentType);
   }

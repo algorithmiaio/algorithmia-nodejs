@@ -1,3 +1,3 @@
-export { Algorithmia } from '../src/Algorithmia';
+export { Algorithmia as default } from './Algorithmia';
 export { AlgorithmiaClient } from './AlgorithmiaClient';
-export { DataFile, DataDir, DataList } from '../src/Data';
+export { DataFile, DataDir, DataList } from './Data';

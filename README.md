@@ -17,9 +17,9 @@ npm install --save algorithmia
 Then instantiate an Algorithmia client using your API key:
 
 ```javascript
-import { Algorithmia } from '../src/Algorithmia';
+const algorithmia = require('algorithmia');
 
-let client: AlgorithmiaClient = Algorithmia.getClient(process.env.ALGORITHMIA_DEFAULT_API_KEY);
+let client: AlgorithmiaClient = algorithmia.getClient(process.env.ALGORITHMIA_DEFAULT_API_KEY);
 ```
 
 Now you are ready to call algorithms.
@@ -37,7 +37,7 @@ The returned promise will be called with the response with the Algorithm complet
 If the algorithm output is text, then the `get()` method on the response will return a string.
 
 ```javascript
-client.algo("algo://demo/Hello/0.1.1").pipe("HAL 9000").then(x => { console.log(x) });
+const response = await client.algo("algo://demo/Hello/0.1.1").pipe("HAL 9000");
 // -> Hello HAL 9000
 ```
 
@@ -47,7 +47,7 @@ Call an algorithm with JSON input by passing in a native JavaScript type;
 most of the time this will be an `Object` or an `Array` (though `Boolean`, `Number`, and `Null` are possible).
 
 ```javascript
-client.algo("algo://WebPredict/ListAnagrams/0.1.0").pipe(["transformer", "terraforms", "retransform"]).then(x => { console.log(x) });
+const response = await client.algo("algo://WebPredict/ListAnagrams/0.1.0").pipe(["transformer", "terraforms", "retransform"]);
 // -> ["transformer","retransform"]
 ```
 
@@ -57,7 +57,7 @@ Call an algorithm with binary input by passing a `Buffer` into the pipe method.
 
 ```javascript
 var buffer = fs.readFileSync("/path/to/bender.jpg");
-client.algo("opencv/SmartThumbnail").pipe(buffer).then(x => { console.log(x) });
+const response = await client.algo("opencv/SmartThumbnail").pipe(buffer);
 // -> Buffer(...)
 ```
 
@@ -66,7 +66,7 @@ client.algo("opencv/SmartThumbnail").pipe(buffer).then(x => { console.log(x) });
 If an error occurs when calling an algorithm, the response will contain an error field that you can check:
 
 ```javascript
-client.algo('util/whoopsWrongAlgo').pipe('Hello, world!').then(x => { console.log(x) });
+const response = await client.algo('util/whoopsWrongAlgo').pipe('Hello, world!');
 ```
 
 ### Request options
@@ -87,11 +87,11 @@ The Algorithmia client also provides a way to manage both Algorithmia hosted dat
 
 ### Create directories
 
-Create directories by instantiating a `DataDir` object and calling `post()`:
+Create directories by instantiating a `DataDir` object and calling `create()`:
 
 ```javascript
 let dir: DataDir = Algorithmia.getClient(process.env.ALGORITHMIA_DEFAULT_API_KEY).dir('Insert directory path');
-await dir.post('Insert directory path');
+await dir.create('Insert directory path');
 ```
 
 ### Upload files to a directory
@@ -113,10 +113,10 @@ Download files by calling `get` on a `DataFile` object:
 
 ```javascript
 let file: DataFile = Algorithmia.getClient(process.env.ALGORITHMIA_DEFAULT_API_KEY).file('Insert file path');
-await file.get().then(x => { console.log(x) });
+const response = await file.get();
 
 let dir: DataDir = Algorithmia.getClient(process.env.ALGORITHMIA_DEFAULT_API_KEY).dir('Insert directory path');
-await dir.get().then(x => { console.log(x) });
+const response = await dir.get();
 ```
 
 ### Delete files and directories
@@ -127,10 +127,10 @@ that indicates whether or not a directory should be deleted if it contains files
 
 ```javascript
 let file: DataFile = Algorithmia.getClient(process.env.ALGORITHMIA_DEFAULT_API_KEY).file('Insert file path');
-await file.delete().then(x => { console.log(x) });
+const response = await file.delete();
 
 let dir: DataDir = Algorithmia.getClient(process.env.ALGORITHMIA_DEFAULT_API_KEY).dir('Insert directory path');
-await dir.delete(true).then(x => { console.log(x) });
+const response = await dir.delete(true);
 ```
 
 ## Building the client

@@ -1,12 +1,13 @@
 import { Algorithmia } from '../src/Algorithmia';
+import { AlgorithmiaClient } from '../src/AlgorithmiaClient';
 
 describe('Localisation initialization', () => {
   beforeEach(() => {
     jest.resetModules();
   });
 
-  describe('algorithm file put call', () => {
-    it('puts file', async () => {
+  describe('algorithm put call', () => {
+    it('uploads file', async () => {
       const file = Algorithmia.getClient(
         process.env.ALGORITHMIA_DEFAULT_API_KEY
       ).file('data://dherring/DalesNotSoFunTime2/NahDawg.txt');
@@ -28,7 +29,7 @@ describe('Localisation initialization', () => {
           process.env.ALGORITHMIA_DEFAULT_API_KEY
         ).dir(dirParentName!);
 
-        await dir2.post(dirName);
+        await dir2.create(dirName);
       }
 
       await file.put('nah dawg');
@@ -37,8 +38,73 @@ describe('Localisation initialization', () => {
     });
   });
 
-  describe('algorithm file parent', () => {
-    it('gets parent', async () => {
+  describe('algorithm file putString call', () => {
+    it('uploads file', async () => {
+      const file = Algorithmia.getClient(
+        process.env.ALGORITHMIA_DEFAULT_API_KEY
+      ).file('data://dherring/DalesNotSoFunTime2/NahDawg.txt');
+
+      const fileAlreadyExists = await file.exists();
+      if (fileAlreadyExists) {
+        await file.delete();
+      }
+
+      const parentDirExists = await file.parent()?.exists();
+
+      if (!parentDirExists) {
+        const dir = file.parent()!;
+        const dirName = dir.baseName();
+        const dirParentDir = dir.parent();
+        const dirParentName = dirParentDir?.baseName();
+
+        const dir2 = Algorithmia.getClient(
+          process.env.ALGORITHMIA_DEFAULT_API_KEY
+        ).dir(dirParentName!);
+
+        await dir2.create(dirName);
+      }
+
+      await file.putString('nah dawg');
+
+      expect(await file.exists()).toBe(true);
+    });
+  });
+
+  describe('algorithm file putJson call', () => {
+    it('uploads file', async () => {
+      const file = Algorithmia.getClient(
+        process.env.ALGORITHMIA_DEFAULT_API_KEY
+      ).file('data://dherring/DalesNotSoFunTime2/NahDawg.txt');
+
+      const fileAlreadyExists = await file.exists();
+      if (fileAlreadyExists) {
+        await file.delete();
+      }
+
+      const parentDirExists = await file.parent()?.exists();
+
+      if (!parentDirExists) {
+        const dir = file.parent()!;
+        const dirName = dir.baseName();
+        const dirParentDir = dir.parent();
+        const dirParentName = dirParentDir?.baseName();
+
+        const dir2 = Algorithmia.getClient(
+          process.env.ALGORITHMIA_DEFAULT_API_KEY
+        ).dir(dirParentName!);
+
+        await dir2.create(dirName);
+      }
+
+      let dataString = 'nah dawg';
+      await file.putJson(JSON.stringify(dataString));
+
+      expect(await file.exists()).toBe(true);
+    });
+  });
+
+  describe('algorithm file parent call', () => {
+    it('gets parent of file', async () => {
       const file = Algorithmia.getClient(
         process.env.ALGORITHMIA_DEFAULT_API_KEY
       ).file('data://dherring/DalesNotSoFunTime2/NahDawg.txt');
@@ -48,7 +114,7 @@ describe('Localisation initialization', () => {
   });
 
   describe('algorithm file get call', () => {
-    it('gets for file', async () => {
+    it('gets file', async () => {
       const file = Algorithmia.getClient(
         process.env.ALGORITHMIA_DEFAULT_API_KEY
       ).file('data://dherring/DalesFunTime/NahDawg.txt');
@@ -57,8 +123,38 @@ describe('Localisation initialization', () => {
     });
   });
 
-  describe('algorithm file head call', () => {
-    it('checks for file', async () => {
+  describe('algorithm file getString call', () => {
+    it('gets file', async () => {
+      const file = Algorithmia.getClient(
+        process.env.ALGORITHMIA_DEFAULT_API_KEY
+      ).file('data://dherring/DalesFunTime/NahDawg.txt');
+
+      expect(await file.getString()).toBe('nah dawg');
+    });
+  });
+
+  describe('algorithm file getJson call', () => {
+    it('gets file', async () => {
+      const file = Algorithmia.getClient(
+        process.env.ALGORITHMIA_DEFAULT_API_KEY
+      ).file('data://dherring/DalesFunTime/NahDawg.txt');
+
+      expect(await file.getJson()).toBe('nah dawg');
+    });
+  });
+
+  describe('algorithm file getBinary call', () => {
+    it('gets file', async () => {
+      const file = Algorithmia.getClient(
+        process.env.ALGORITHMIA_DEFAULT_API_KEY
+      ).file('data://dherring/DalesFunTime/NahDawg.txt');
+
+      expect(await file.getBinary()).toBe('nah dawg');
+    });
+  });
+
+  describe('algorithm file exists call', () => {
+    it('checks for file existence', async () => {
       const file = Algorithmia.getClient(
         process.env.ALGORITHMIA_DEFAULT_API_KEY
       ).file('data://dherring/DalesFunTime/NahDawg.txt');
@@ -68,7 +164,7 @@ describe('Localisation initialization', () => {
   });
 
   describe('algorithm file delete call', () => {
-    it('deletes for file', async () => {
+    it('deletes file', async () => {
       const file = Algorithmia.getClient(
         process.env.ALGORITHMIA_DEFAULT_API_KEY
       ).file('data://dherring/DalesNotSoFunTime2/NahDawg2.txt');
@@ -81,8 +177,8 @@ describe('Localisation initialization', () => {
     });
   });
 
-  describe('algorithm directory head call', () => {
-    it('checks for directory', async () => {
+  describe('algorithm directory exists call', () => {
+    it('checks for directory existence', async () => {
       const dir = Algorithmia.getClient(
         process.env.ALGORITHMIA_DEFAULT_API_KEY
       ).dir('data://dherring/DalesNotSoFunTime2');
@@ -91,7 +187,7 @@ describe('Localisation initialization', () => {
     });
   });
 
-  describe('algorithm directory post call', () => {
+  describe('algorithm directory create call', () => {
     it('creates dir', async () => {
       const dir = Algorithmia.getClient(
         process.env.ALGORITHMIA_DEFAULT_API_KEY
@@ -102,14 +198,18 @@ describe('Localisation initialization', () => {
         await dir.delete(true);
       }
 
-      await dir.post('DalesNotSoFunTime3');
+      const newDir = Algorithmia.getClient(
+        process.env.ALGORITHMIA_DEFAULT_API_KEY
+      ).dir('data://dherring/');
 
-      expect(await dir.exists()).toBe(true);
+      await newDir.create('DalesNotSoFunTime3');
+
+      expect(await newDir.exists()).toBe(true);
     });
   });
 
   describe('algorithm directory file put call', () => {
-    it('puts file', async () => {
+    it('uploads file', async () => {
       const dir = Algorithmia.getClient(
         process.env.ALGORITHMIA_DEFAULT_API_KEY
       ).dir('data://dherring/DalesNotSoFunTime2');
@@ -144,7 +244,7 @@ describe('Localisation initialization', () => {
         process.env.ALGORITHMIA_DEFAULT_API_KEY
       ).dir('data://dherring');
 
-      await dir.post('DalesNotSoFunTime4');
+      await dir.create('DalesNotSoFunTime4');
 
       const newDir = Algorithmia.getClient(
         process.env.ALGORITHMIA_DEFAULT_API_KEY

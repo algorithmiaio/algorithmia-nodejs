@@ -1,5 +1,5 @@
 import { HttpClient } from './HttpClient';
-import { ContentTypeHelper } from './ContentTypeHelper';
+import { getContentType } from './ContentTypeHelper';
 
 class AlgorithmExecutable {
   private client: HttpClient;
@@ -17,38 +17,22 @@ class AlgorithmExecutable {
     stdout = false,
     timeout = 300
   ) {
-    const contentTypeHelper: ContentTypeHelper = new ContentTypeHelper();
-    let contentType: string;
 
-    contentType = contentTypeHelper.contentTypeHelper(input);
+    const contentType = getContentType(input);
 
-    if (version == undefined) {
-      return this.client.post(
-        this.path +
-          '/?output=' +
-          output +
-          '&stdout=' +
-          stdout +
-          '&timeout=' +
-          timeout,
-        input,
-        contentType
-      );
-    } else {
-      return this.client.post(
-        this.path +
-          '/' +
-          version +
-          '/?output=' +
-          output +
-          '&stdout=' +
-          stdout +
-          '&timeout=' +
-          timeout,
-        input,
-        contentType
-      );
-    }
+    const pathname = version
+      ? `${this.path}/${version}/`
+      : `${this.path}/`;
+
+    const params = new URLSearchParams({
+      timeout: timeout.toString(),
+      stdout: stdout.toString(),
+      output,
+    });
+
+    const fullPath = `${pathname}?${params.toString()}`;
+
+    return this.client.post(fullPath, input, contentType);
   }
 }
 

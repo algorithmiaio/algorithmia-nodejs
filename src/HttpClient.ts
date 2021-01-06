@@ -18,39 +18,42 @@ class HttpClient {
     this.httpClient = new TypedHttpClient(this.userAgent);
   }
 
-  async get(path: string) {
-    return await this.httpClient.get(path, this.headers).then((x) => {
-      return x.readBody();
-    });
+  async get(path: string, acceptHeader: string) {
+    this.headers['Accept'] = acceptHeader;
+    const response = await this.httpClient.get(path, this.headers);
+
+    return response.readBody();
   }
 
   async head(path: string) {
-    return await this.httpClient.head(path, this.headers).then((x) => {
-      return x.message.statusCode === 200;
-    });
+    const response = await this.httpClient.head(path, this.headers);
+
+    return response.message.statusCode === 200;
   }
 
   async post(path: string, data: Object, contentType: string) {
     this.headers['Content-Type'] = contentType;
-    return await this.httpClient
-      .post(path, JSON.stringify(data), this.headers)
-      .then((x) => {
-        return x.readBody();
-      });
+    const response = await this.httpClient.post(path, JSON.stringify(data), this.headers);
+
+    return response.readBody();
   }
 
   async put(path: string, data: Object) {
-    return await this.httpClient
-      .put(path, JSON.stringify(data), this.headers)
-      .then((x) => {
-        return x.readBody();
-      });
+    const response = await this.httpClient.put(path, JSON.stringify(data), this.headers);
+
+    return response.readBody();
+  }
+
+  async putJson(path: string, data: string) {
+    const response = await this.httpClient.put(path, data, this.headers);
+
+    return response.readBody();
   }
 
   async delete(path: string) {
-    return await this.httpClient.del(path, this.headers).then((x) => {
-      return x.readBody();
-    });
+    const response = await this.httpClient.del(path, this.headers);
+
+    return response.readBody();
   }
 }
 
