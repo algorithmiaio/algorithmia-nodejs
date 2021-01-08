@@ -1,11 +1,21 @@
-### 01/08/2021
+# Changlog
+
+## v1.0.0 - 01/08/2021
+
 -----------------
 
 ### Move from Coffee to Typescript
+
 -----------------
-- Translate entire repo
-- Api methods are now promise based instead of callback based
+
+### Breaking
+
+- API methods are now promise based instead of callback based
+
+### Additional Changes
+
+- Translate entire repo to TypeScript
 - Readme updated
 - Algorithm DTO added
-- Algorithm Api endpoints added
-- Tests/test data added
+- Algorithm API endpoints added
+- Tests added
