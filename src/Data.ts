@@ -89,7 +89,9 @@ class DataDir extends Data {
 
   putFile(localFilePath: string) {
     const fileName = basename(localFilePath);
-    return this.file(fileName).put(readFileSync(localFilePath, { encoding: 'utf-8' }));
+    return this.file(fileName).put(
+      readFileSync(localFilePath, { encoding: 'utf-8' })
+    );
   }
 
   create(input: string) {

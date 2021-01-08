@@ -18,12 +18,9 @@ class AlgorithmExecutable {
     stdout = false,
     timeout = 300
   ) {
-
     const contentType = getContentType(input);
 
-    const pathname = version
-      ? `${this.path}/${version}/`
-      : `${this.path}/`;
+    const pathname = version ? `${this.path}/${version}/` : `${this.path}/`;
 
     const params = new URLSearchParams({
       timeout: timeout.toString(),

@@ -33,13 +33,21 @@ class HttpClient {
 
   async post(path: string, data: Object, contentType: string) {
     this.headers['Content-Type'] = contentType;
-    const response = await this.httpClient.post(path, JSON.stringify(data), this.headers);
+    const response = await this.httpClient.post(
+      path,
+      JSON.stringify(data),
+      this.headers
+    );
 
     return response.readBody();
   }
 
   async put(path: string, data: Object) {
-    const response = await this.httpClient.put(path, JSON.stringify(data), this.headers);
+    const response = await this.httpClient.put(
+      path,
+      JSON.stringify(data),
+      this.headers
+    );
 
     return response.readBody();
   }
