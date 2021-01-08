@@ -98,7 +98,7 @@ describe('Localisation initialization', () => {
         await dir2.create(dirName);
       }
 
-      let dataString = 'nah dawg';
+      const dataString = 'nah dawg';
       await file.putJson(JSON.stringify(dataString));
 
       expect(await file.exists()).toBe(true);
@@ -152,7 +152,9 @@ describe('Localisation initialization', () => {
       ).file('data://dherring/DalesFunTime/NahDawg.txt');
 
       writeFileSync('./NahDawg.txt', await file.getBinary());
-      expect(await readFileSync('./NahDawg.txt', { encoding: 'utf-8' })).toBe('nah dawg');
+      expect(await readFileSync('./NahDawg.txt', { encoding: 'utf-8' })).toBe(
+        'nah dawg'
+      );
     });
   });
 
@@ -280,5 +282,4 @@ describe('Localisation initialization', () => {
       );
     });
   });
-
 });
