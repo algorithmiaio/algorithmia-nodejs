@@ -245,7 +245,7 @@ describe('Localisation initialization', () => {
         await alreadyExistsFile.delete();
       }
 
-      await dir.putFile(resolve(`../../DaleHerringImportantDocs/HorribleNightCurse.png`));
+      await dir.putFile(resolve(__dirname + `/HorribleNightCurse.png`));
 
       expect(await alreadyExistsFile.exists()).toBe(true);
     });
