@@ -1,5 +1,6 @@
 import { HttpClient } from './HttpClient';
 import { AlgorithmExecutable } from './AlgorithmExecutable';
+import type { Input } from './ContentTypeHelper';
 import { DataFile, DataDir } from './Data';
 
 class AlgorithmiaClient {
@@ -191,7 +192,7 @@ class AlgorithmiaClient {
    * @param requestObject object payload
    * @return an Algorithm object for the specified algorithm
    */
-  createAlgo(userName: string, requestObject: Object) {
+  createAlgo(userName: string, requestObject: Input) {
     const contentType = 'application/json';
     return this.httpClient.post(
       this.apiAddress + this.algorithmsPrefix + '/' + userName,
