@@ -1,0 +1,17 @@
+{
+"extends": "@tsconfig/node12/tsconfig.json",
+"compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "strict": true,
+    "sourceMap": true,
+    "declaration": true,
+    "preserveConstEnums": true,
+    "rootDir": "./src",
+    "outDir": "./lib"
+  },
+  "include": [
+    "src/**/*.ts",
+  ],
+  "exclude": ["node_modules"]
+}
