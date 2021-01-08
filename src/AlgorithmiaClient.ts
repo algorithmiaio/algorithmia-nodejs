@@ -1,5 +1,6 @@
 import { HttpClient } from './HttpClient';
 import { AlgorithmExecutable } from './AlgorithmExecutable';
+import type { Input } from './ContentTypeHelper';
 import { DataFile, DataDir } from './Data';
 
 class AlgorithmiaClient {
@@ -31,12 +32,15 @@ class AlgorithmiaClient {
   }
 
   /**
-    * Initialize an Algorithm object from this client
-    * @param algoUri the algorithm's URI, e.g., algo://user/algoname
-    * @return an Algorithm client for the specified algorithm
-    */
+   * Initialize an Algorithm object from this client
+   * @param algoUri the algorithm's URI, e.g., algo://user/algoname
+   * @return an Algorithm client for the specified algorithm
+   */
   algo(algoUri: string): AlgorithmExecutable {
-    return new AlgorithmExecutable(this.httpClient, this.apiAddress + this.algoPrefix + '/' + algoUri);
+    return new AlgorithmExecutable(
+      this.httpClient,
+      this.apiAddress + this.algoPrefix + '/' + algoUri
+    );
   }
 
   /**
@@ -46,7 +50,9 @@ class AlgorithmiaClient {
    * @return an Algorithm object for the specified algorithm
    */
   getAlgo(userName: string, algoName: string) {
-    return this.httpClient.get(this.apiAddress + this.algorithmsPrefix + '/' + userName + '/' + algoName);
+    return this.httpClient.get(
+      this.apiAddress + this.algorithmsPrefix + '/' + userName + '/' + algoName
+    );
   }
 
   /**
@@ -59,11 +65,48 @@ class AlgorithmiaClient {
    * @param marker used for pagination
    * @return an AlgorithmVersionsList object for the specified algorithm
    */
-  listAlgoVersions(userName: string, algoName: string, callable = true, limit = 50, published = true, marker?: string) {
+  listAlgoVersions(
+    userName: string,
+    algoName: string,
+    callable = true,
+    limit = 50,
+    published = true,
+    marker?: string
+  ) {
     if (marker == undefined) {
-      return this.httpClient.get(this.apiAddress + this.algorithmsPrefix + '/' + userName + '/' + algoName + '/versions' + '?callable=' + callable + '&limit=' + limit + '&published=' + published);
+      return this.httpClient.get(
+        this.apiAddress +
+          this.algorithmsPrefix +
+          '/' +
+          userName +
+          '/' +
+          algoName +
+          '/versions' +
+          '?callable=' +
+          callable +
+          '&limit=' +
+          limit +
+          '&published=' +
+          published
+      );
     } else {
-      return this.httpClient.get(this.apiAddress + this.algorithmsPrefix + '/' + userName + '/' + algoName + '/versions' + '?callable=' + callable + '&limit=' + limit + '&published=' + published + '&marker=' + marker);
+      return this.httpClient.get(
+        this.apiAddress +
+          this.algorithmsPrefix +
+          '/' +
+          userName +
+          '/' +
+          algoName +
+          '/versions' +
+          '?callable=' +
+          callable +
+          '&limit=' +
+          limit +
+          '&published=' +
+          published +
+          '&marker=' +
+          marker
+      );
     }
   }
 
@@ -75,12 +118,38 @@ class AlgorithmiaClient {
    * @param marker used for pagination
    * @return an AlgorithmBuildsList object for the specified algorithm
    */
-  listAlgoBuilds(userName: string, algoName: string, limit = 50, marker?: string) {
+  listAlgoBuilds(
+    userName: string,
+    algoName: string,
+    limit = 50,
+    marker?: string
+  ) {
     if (marker == undefined) {
-      return this.httpClient.get(this.apiAddress + this.algorithmsPrefix + '/' + userName + '/' + algoName + '/builds' + '?limit=' + limit);
-    }
-    else {
-      return this.httpClient.get(this.apiAddress + this.algorithmsPrefix + '/' + userName + '/' + algoName + '/builds' + '?limit=' + limit + '&marker=' + marker);
+      return this.httpClient.get(
+        this.apiAddress +
+          this.algorithmsPrefix +
+          '/' +
+          userName +
+          '/' +
+          algoName +
+          '/builds' +
+          '?limit=' +
+          limit
+      );
+    } else {
+      return this.httpClient.get(
+        this.apiAddress +
+          this.algorithmsPrefix +
+          '/' +
+          userName +
+          '/' +
+          algoName +
+          '/builds' +
+          '?limit=' +
+          limit +
+          '&marker=' +
+          marker
+      );
     }
   }
 
@@ -92,7 +161,17 @@ class AlgorithmiaClient {
    * @return a BuildLogs object for the specified algorithm
    */
   getAlgoBuildLogs(userName: string, algoName: string, buildId: string) {
-    return this.httpClient.get(this.apiAddress + this.algorithmsPrefix + '/' + userName + '/' + algoName + '/builds/' + buildId + '/logs');
+    return this.httpClient.get(
+      this.apiAddress +
+        this.algorithmsPrefix +
+        '/' +
+        userName +
+        '/' +
+        algoName +
+        '/builds/' +
+        buildId +
+        '/logs'
+    );
   }
 
   /**
@@ -102,7 +181,9 @@ class AlgorithmiaClient {
    * @return an empty response
    */
   deleteAlgo(userName: string, algoName: string) {
-    return this.httpClient.delete(this.apiAddress + this.algorithmsPrefix + '/' + userName + '/' + algoName);
+    return this.httpClient.delete(
+      this.apiAddress + this.algorithmsPrefix + '/' + userName + '/' + algoName
+    );
   }
 
   /**
@@ -111,9 +192,13 @@ class AlgorithmiaClient {
    * @param requestObject object payload
    * @return an Algorithm object for the specified algorithm
    */
-  createAlgo(userName: string, requestObject: Object) {
+  createAlgo(userName: string, requestObject: Input) {
     const contentType = 'application/json';
-    return this.httpClient.post(this.apiAddress + this.algorithmsPrefix + '/' + userName, requestObject, contentType);
+    return this.httpClient.post(
+      this.apiAddress + this.algorithmsPrefix + '/' + userName,
+      requestObject,
+      contentType
+    );
   }
 
   /**
@@ -134,12 +219,14 @@ class AlgorithmiaClient {
   }
 
   /**
-  * Query an Algorithm SCM status from this client
-  * @param scmId id of the scm to retrieve
-  * @return an Algorithm SCM authorization object
-  */
+   * Query an Algorithm SCM status from this client
+   * @param scmId id of the scm to retrieve
+   * @return an Algorithm SCM authorization object
+   */
   querySCMStatus(scmId: string) {
-    return this.httpClient.get(this.apiAddress + this.scmPrefix + '/' + scmId + '/oauth/status');
+    return this.httpClient.get(
+      this.apiAddress + this.scmPrefix + '/' + scmId + '/oauth/status'
+    );
   }
 
   /**
@@ -152,23 +239,28 @@ class AlgorithmiaClient {
   }*/
 
   /**
-    * Initialize an DataFile object from this client
-    * @param path to a data file, e.g., data://.my/foo/bar.txt
-    * @return a DataFile client for the specified file
-    */
+   * Initialize an DataFile object from this client
+   * @param path to a data file, e.g., data://.my/foo/bar.txt
+   * @return a DataFile client for the specified file
+   */
   file(path: string): DataFile {
-    return new DataFile(this.httpClient, this.apiAddress + this.dataPrefix + '/' + path);
+    return new DataFile(
+      this.httpClient,
+      this.apiAddress + this.dataPrefix + '/' + path
+    );
   }
 
   /**
-    * Initialize a DataDirectory object from this client
-    * @param path to a data directory, e.g., data://.my/foo
-    * @return a DataDirectory client for the specified directory
-    */
+   * Initialize a DataDirectory object from this client
+   * @param path to a data directory, e.g., data://.my/foo
+   * @return a DataDirectory client for the specified directory
+   */
   dir(path: string): DataDir {
-    return new DataDir(this.httpClient, this.apiAddress + this.dataPrefix + '/' + path);
+    return new DataDir(
+      this.httpClient,
+      this.apiAddress + this.dataPrefix + '/' + path
+    );
   }
-
 }
 
 export { AlgorithmiaClient };

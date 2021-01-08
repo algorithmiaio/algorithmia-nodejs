@@ -32,7 +32,7 @@ class HttpClient {
     return response.message.statusCode === 200;
   }
 
-  async post(path: string, data: Object, contentType: string) {
+  async post(path: string, data: Input, contentType: string) {
     this.headers['Content-Type'] = contentType;
     const response = await this.httpClient.post(
       path,
@@ -43,7 +43,7 @@ class HttpClient {
     return response.readBody();
   }
 
-  async putJson(path: string, data: string) {
+  async putJson(path: string, data: Json) {
     const response = await this.httpClient.put(
       path,
       JSON.stringify(data),

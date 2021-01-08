@@ -57,7 +57,7 @@ class DataFile extends Data {
     return this.client.put(this.path, input);
   }
 
-  putJson(input: string) {
+  putJson(input: Json) {
     return this.client.putJson(this.path, input);
   }
 
