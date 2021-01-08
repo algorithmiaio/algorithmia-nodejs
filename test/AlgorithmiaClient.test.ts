@@ -76,7 +76,7 @@ describe("Localisation initialization", () => {
         });
     });
 
-    describe('algorithm query scm call', () => {
+    describe('algorithm get query scm call', () => {
         it('queries an scm', async () => {
             const scmAuth: AlgorithmSCMAuthorizationStatus = JSON.parse(await Algorithmia.getClient(process.env.ALGORITHMIA_DEFAULT_API_KEY).querySCMStatus('github'));
 

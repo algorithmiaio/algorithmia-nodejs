@@ -1,4 +1,10 @@
-export function getContentType(input: Object): string {
+export interface Json {
+  [key: string]: number | string | null | Json;
+}
+
+export type Input = Json | string | Buffer;
+
+export function getContentType(input: Input): string {
   let contentType: string;
 
   if (Buffer.isBuffer(input)) {

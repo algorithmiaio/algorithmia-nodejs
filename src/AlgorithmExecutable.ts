@@ -1,5 +1,5 @@
 import { HttpClient } from './HttpClient';
-import { getContentType } from './ContentTypeHelper';
+import { getContentType, Input, Json } from './ContentTypeHelper';
 import { URLSearchParams } from 'url';
 
 class AlgorithmExecutable {
@@ -12,18 +12,15 @@ class AlgorithmExecutable {
   }
 
   pipe(
-    input: Object,
+    input: Input,
     version?: string,
     output = 'raw',
     stdout = false,
     timeout = 300
   ) {
-
     const contentType = getContentType(input);
 
-    const pathname = version
-      ? `${this.path}/${version}/`
-      : `${this.path}/`;
+    const pathname = version ? `${this.path}/${version}/` : `${this.path}/`;
 
     const params = new URLSearchParams({
       timeout: timeout.toString(),
@@ -42,7 +39,7 @@ interface AlgoResponse {
   error?: Error;
   metadata?: MetaData;
   request_id?: string;
-  result?: string | Object;
+  result?: string | Json;
 }
 
 interface Error {

@@ -1,5 +1,5 @@
 import { HttpClient } from './HttpClient';
-import { getContentType } from './ContentTypeHelper';
+import { getContentType, Json } from './ContentTypeHelper';
 import { readFileSync } from 'fs';
 import { basename } from 'path';
 
@@ -89,7 +89,9 @@ class DataDir extends Data {
 
   putFile(localFilePath: string) {
     const fileName = basename(localFilePath);
-    return this.file(fileName).put(readFileSync(localFilePath, { encoding: 'utf-8' }));
+    return this.file(fileName).put(
+      readFileSync(localFilePath, { encoding: 'utf-8' })
+    );
   }
 
   create(input: string) {
