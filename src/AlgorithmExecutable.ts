@@ -16,7 +16,7 @@ class AlgorithmExecutable {
     version?: string,
     output = 'raw',
     stdout = false,
-    timeout = 60000
+    timeout = 300
   ) {
     const contentType = getContentType(input);
 

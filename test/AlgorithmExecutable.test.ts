@@ -3,7 +3,6 @@ import { Algorithmia } from '../src/Algorithmia';
 describe('Localisation initialization', () => {
   beforeEach(() => {
     jest.resetModules();
-    jest.setTimeout(60000);
   });
 
   describe('algorithm pipe call', () => {
