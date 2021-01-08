@@ -105,6 +105,9 @@ await file.put('Insert your file body');
 let dir: DataDir = Algorithmia.getClient(process.env.ALGORITHMIA_DEFAULT_API_KEY).dir('Insert directory path');
 let file: DataFile = dir.file('Insert file path');
 await dir.put(file.baseName(), 'Insert your file body');
+
+let dir = Algorithmia.getClient(process.env.ALGORITHMIA_DEFAULT_API_KEY).dir('Insert directory path');
+await dir.putFile(resolve('Insert local file path'));
 ```
 
 ### Download content from files
@@ -132,6 +135,20 @@ const response = await file.delete();
 let dir: DataDir = Algorithmia.getClient(process.env.ALGORITHMIA_DEFAULT_API_KEY).dir('Insert directory path');
 const response = await dir.delete(true);
 ```
+
+### Algo API's
+
+| Name | Parameters | Example |
+| :---------- | :---------- | :---------- |
+| Get Algorithm | String userName - Your Algorithmia user name.<br>String algoName - The name address of the algorithm. | const algorithm: Algorithm = JSON.parse(await Algorithmia.getClient(key).getAlgo(userName, algoName)); | 
+| List Algorithm Versions | String userName - Your Algorithmia user name.<br>String algoName - The name address of the algorithm.<br>Boolean callable - Whether to return only public or private algorithm versions.<br>Integer limit - Items per page.<br>Boolean published - Whether to return only versions that have been published.<br>String marker - Marker for pagination. | const algorithmVersionsList: AlgorithmVersionsList = JSON.parse(await Algorithmia.getClient(key).listAlgoVersions(userName, algoName)); |
+| List Algorithm Builds | String userName - Your Algorithmia user name.<br>String algoName - The name address of the algorithm.<br>Integer limit - Items per page.<br>String marker - Marker for pagination. | const algorithmBuildsList: AlgorithmBuildsList = JSON.parse(await Algorithmia.getClient(key).listAlgoBuilds(userName, algoName)); |
+| Get Algorithm Build Logs | String userName - Your Algorithmia user name.<br>String algoName - The name address of the algorithm.<br>String buildId - The id of the build to retrieve logs. | const response: [] = JSON.parse(await Algorithmia.getClient(key).getAlgoBuildLogs(userName, algoName, buildId)); |
+| Delete Algorithm | String userName - Your Algorithmia user name.<br>String algoName - The name address of the algorithm. | const response = await Algorithmia.getClient(key).deleteAlgo(userName, algoName); |
+| Create Algorithm | String userName - Your Algorithmia user name.<br>String requestString - JSON payload for the Algorithm you wish to create. | const algorithm: Algorithm = JSON.parse(await Algorithmia.getClient(key).createAlgo(userName, algoJson)); | 
+| List Cluster SCM’s | - | const response: SCM[] = JSON.parse(await Algorithmia.getClient(key).listSCMs()); |
+| Get SCM | String scmId - The id of scm to retrive | const scm: SCM = JSON.parse(await Algorithmia.getClient(key).getSCM(scmId)); |
+| Query SCM Authorization Status | String scmId - The id of scm status to retrive | const scmAuth: AlgorithmSCMAuthorizationStatus = JSON.parse(await Algorithmia.getClient(key).querySCMStatus(scmId)); |
 
 ## Building the client
 
