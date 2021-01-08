@@ -1,5 +1,7 @@
 import { HttpClient } from './HttpClient';
 import { getContentType } from './ContentTypeHelper';
+import { readFileSync } from 'fs';
+import { basename } from 'path';
 
 abstract class Data {
   protected client: HttpClient;
@@ -29,8 +31,7 @@ abstract class Data {
  */
 class DataFile extends Data {
   get() {
-    const acceptHeader = 'application/octet-stream';
-    return this.client.get(this.path, acceptHeader);
+    return this.client.get(this.path);
   }
 
   getString() {
@@ -86,9 +87,13 @@ class DataDir extends Data {
     return this.file(fileName).put(input);
   }
 
+  putFile(localFilePath: string) {
+    const fileName = basename(localFilePath);
+    return this.file(fileName).put(readFileSync(localFilePath, { encoding: 'utf-8' }));
+  }
+
   create(input: string) {
     const contentType = getContentType(input);
-
     return this.client.post(this.path, input, contentType);
   }
 

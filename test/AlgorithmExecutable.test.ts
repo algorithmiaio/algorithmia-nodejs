@@ -24,4 +24,5 @@ describe('Localisation initialization', () => {
       expect(result).toBe(expected);
     });
   });
+
 });

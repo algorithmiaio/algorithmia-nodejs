@@ -18,7 +18,7 @@ class HttpClient {
     this.httpClient = new TypedHttpClient(this.userAgent);
   }
 
-  async get(path: string, acceptHeader: string) {
+  async get(path: string, acceptHeader = 'application/octet-stream') {
     this.headers['Accept'] = acceptHeader;
     const response = await this.httpClient.get(path, this.headers);
 

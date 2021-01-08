@@ -1,5 +1,7 @@
 import { Algorithmia } from '../src/Algorithmia';
-import { AlgorithmiaClient } from '../src/AlgorithmiaClient';
+import { writeFileSync } from 'fs';
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
 
 describe('Localisation initialization', () => {
   beforeEach(() => {
@@ -149,7 +151,8 @@ describe('Localisation initialization', () => {
         process.env.ALGORITHMIA_DEFAULT_API_KEY
       ).file('data://dherring/DalesFunTime/NahDawg.txt');
 
-      expect(await file.getBinary()).toBe('nah dawg');
+      writeFileSync('./NahDawg.txt', await file.getBinary());
+      expect(await readFileSync('./NahDawg.txt', { encoding: 'utf-8' })).toBe('nah dawg');
     });
   });
 
@@ -226,6 +229,28 @@ describe('Localisation initialization', () => {
     });
   });
 
+  describe('algorithm directory file put call from local path', () => {
+    it('uploads file from local path', async () => {
+      const dir = Algorithmia.getClient(
+        process.env.ALGORITHMIA_DEFAULT_API_KEY
+      ).dir('data://dherring/DalesNotSoFunTime2');
+
+      const alreadyExistsFile = Algorithmia.getClient(
+        process.env.ALGORITHMIA_DEFAULT_API_KEY
+      ).file('data://dherring/DalesNotSoFunTime2/HorribleNightCurse.png');
+
+      const fileAlreadyExists = await alreadyExistsFile.exists();
+
+      if (fileAlreadyExists) {
+        await alreadyExistsFile.delete();
+      }
+
+      await dir.putFile(resolve(`../../Desktop/Dale Herring Important Docs/HorribleNightCurse.png`));
+
+      expect(await alreadyExistsFile.exists()).toBe(true);
+    });
+  });
+
   describe('algorithm directory get call', () => {
     it('gets dir', async () => {
       const dir = Algorithmia.getClient(
@@ -255,4 +280,5 @@ describe('Localisation initialization', () => {
       );
     });
   });
+
 });
