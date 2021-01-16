@@ -225,6 +225,68 @@ class Build {
   }
 }
 
+class Organization {
+  org_contact_name: string;
+  org_email: string;
+  org_label: string;
+  org_name: string;
+  org_url: string;
+  external_id: string;
+  external_admin_group_id: string;
+  external_member_group_id: string;
+  resource_type: string;
+  self_link: string;
+
+  constructor(
+    org_contact_name: string,
+    org_email: string,
+    org_label: string,
+    org_name: string,
+    org_url: string,
+    external_id: string,
+    external_admin_group_id: string,
+    external_member_group_id: string,
+    resource_type: string,
+    self_link: string
+  ) {
+    this.org_contact_name = org_contact_name;
+    this.org_email = org_email;
+    this.org_label = org_label;
+    this.org_name = org_name;
+    this.org_url = org_url;
+    this.external_id = external_id;
+    this.external_admin_group_id = external_admin_group_id;
+    this.external_member_group_id = external_member_group_id;
+    this.resource_type = resource_type;
+    this.self_link = self_link;
+  }
+
+  //for testing
+  createTestOrganization() {
+    const requestObject = {
+      org_contact_name: 'some owner',
+      org_email: 'SomeEmail@Whatsittoyou.com',
+      org_label: 'myLabel',
+      org_name: 'MyOrg' + Date.now(),
+    }
+    return requestObject;
+  }
+
+  //for testing
+  editTestOrganization() {
+    const requestObject = {
+      org_contact_name: 'some owner',
+      org_email: 'SomeEmail@Whatsittoyou.com',
+      org_label: 'myLabel',
+      type_id: '3d40e3b0-d82a-11ea-9a3c-0ee5e2d35097',
+      resource_type: 'organization',
+      id: '3d9a9f41-d82a-11ea-9a3c-0ee5e2d35097'
+    }
+    return requestObject;
+  }
+
+}
+
 interface AlgorithmVersionsList {
   marker: string;
   next_link: string;
@@ -260,4 +322,5 @@ export {
   AlgorithmVersionsList,
   AlgorithmBuildsList,
   AlgorithmSCMAuthorizationStatus,
+  Organization
 };

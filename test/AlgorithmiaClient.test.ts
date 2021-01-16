@@ -5,6 +5,7 @@ import {
   AlgorithmVersionsList,
   AlgorithmBuildsList,
   AlgorithmSCMAuthorizationStatus,
+  Organization,
 } from '../src/Algorithm';
 
 describe('Localisation initialization', () => {
@@ -139,4 +140,40 @@ describe('Localisation initialization', () => {
             expect(response).toBe('');
         });
     });*/
+
+    describe('organization create call', () => {
+      it('creates for organization', async () => {
+        const testOrganization = Organization.prototype.createTestOrganization();
+        const organization: Organization = JSON.parse(
+          await Algorithmia.getClient(
+            process.env.ALGORITHMIA_ADMIN_API_KEY, process.env.ALGORITHMIA_TEST_ADDRESS
+          ).createOrganization(testOrganization)
+        );
+        expect(organization.org_name).toBe(testOrganization.org_name)
+      });
+    });
+
+    describe('organization get organization', () => {
+      it('gets an organization', async () => {
+        const organization: Organization = JSON.parse(
+          await Algorithmia.getClient(
+            process.env.ALGORITHMIA_ADMIN_API_KEY, process.env.ALGORITHMIA_TEST_ADDRESS
+          ).getOrganization('a_myOrg15')
+        );
+  
+        expect(organization.org_email).toBe('a_myOrg15@algo.com');
+      });
+    });
+
+    describe('organization edit call', () => {
+      it('edits for organization', async () => {
+        const testOrganization = Organization.prototype.editTestOrganization();
+        const response = 
+          await Algorithmia.getClient(
+            process.env.ALGORITHMIA_ADMIN_API_KEY, process.env.ALGORITHMIA_TEST_ADDRESS
+          ).editOrganization('MyOrg1606332498213', testOrganization);
+        expect(response).toBe('');
+      });
+    });
+    
 });
