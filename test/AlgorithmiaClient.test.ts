@@ -141,39 +141,63 @@ describe('Localisation initialization', () => {
         });
     });*/
 
-    describe('organization create call', () => {
-      it('creates for organization', async () => {
-        const testOrganization = Organization.prototype.createTestOrganization();
-        const organization: Organization = JSON.parse(
-          await Algorithmia.getClient(
-            process.env.ALGORITHMIA_ADMIN_API_KEY, process.env.ALGORITHMIA_TEST_ADDRESS
-          ).createOrganization(testOrganization)
-        );
-        expect(organization.org_name).toBe(testOrganization.org_name)
-      });
+  describe('organization create call', () => {
+    it('creates for organization', async () => {
+      const testOrganization = createTestOrganization();
+      const organization: Organization = JSON.parse(
+        await Algorithmia.getClient(
+          process.env.ALGORITHMIA_ADMIN_API_KEY, process.env.ALGORITHMIA_TEST_ADDRESS
+        ).createOrganization(testOrganization)
+      );
+      expect(organization.org_name).toBe(testOrganization.org_name)
     });
+  });
 
-    describe('organization get organization', () => {
-      it('gets an organization', async () => {
-        const organization: Organization = JSON.parse(
-          await Algorithmia.getClient(
-            process.env.ALGORITHMIA_ADMIN_API_KEY, process.env.ALGORITHMIA_TEST_ADDRESS
-          ).getOrganization('a_myOrg15')
-        );
-  
-        expect(organization.org_email).toBe('a_myOrg15@algo.com');
-      });
-    });
+  describe('organization get organization', () => {
+    it('gets an organization', async () => {
+      const organization: Organization = JSON.parse(
+        await Algorithmia.getClient(
+          process.env.ALGORITHMIA_ADMIN_API_KEY, process.env.ALGORITHMIA_TEST_ADDRESS
+        ).getOrganization('a_myOrg15')
+      );
 
-    describe('organization edit call', () => {
-      it('edits for organization', async () => {
-        const testOrganization = Organization.prototype.editTestOrganization();
-        const response = 
-          await Algorithmia.getClient(
-            process.env.ALGORITHMIA_ADMIN_API_KEY, process.env.ALGORITHMIA_TEST_ADDRESS
-          ).editOrganization('MyOrg1606332498213', testOrganization);
-        expect(response).toBe('');
-      });
+      expect(organization.org_email).toBe('a_myOrg15@algo.com');
     });
-    
+  });
+
+  describe('organization edit call', () => {
+    it('edits for organization', async () => {
+      const testOrganization = editTestOrganization();
+      const response =
+        await Algorithmia.getClient(
+          process.env.ALGORITHMIA_ADMIN_API_KEY, process.env.ALGORITHMIA_TEST_ADDRESS
+        ).editOrganization('MyOrg1606332498213', testOrganization);
+      expect(response).toBe('');
+    });
+  });
+
+  //for testing
+  function createTestOrganization() {
+    const requestObject = {
+      org_contact_name: 'some owner',
+      org_email: 'SomeEmail@Whatsittoyou.com',
+      org_label: 'myLabel',
+      org_name: 'MyOrg' + Date.now(),
+    }
+    return requestObject;
+  }
+
+  //for testing
+  function editTestOrganization() {
+    const requestObject = {
+      org_contact_name: 'some owner',
+      org_email: 'SomeEmail@Whatsittoyou.com',
+      org_label: 'myLabel',
+      type_id: '3d40e3b0-d82a-11ea-9a3c-0ee5e2d35097',
+      resource_type: 'organization',
+      id: '3d9a9f41-d82a-11ea-9a3c-0ee5e2d35097'
+    }
+    return requestObject;
+  }
+
 });
