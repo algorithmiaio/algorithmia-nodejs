@@ -2,6 +2,7 @@ import { HttpClient } from './HttpClient';
 import { AlgorithmExecutable } from './AlgorithmExecutable';
 import type { Input } from './ContentTypeHelper';
 import { DataFile, DataDir } from './Data';
+import { URLSearchParams } from 'url';
 
 class AlgorithmiaClient {
   private defaultApiAddress = 'https://api.algorithmia.com';
@@ -9,6 +10,7 @@ class AlgorithmiaClient {
   private algorithmsPrefix = '/v1/algorithms';
   private dataPrefix = '/v1/data';
   private scmPrefix = '/v1/scms';
+  private organizationPrefix = '/v1/organizations';
   private key: string;
   private apiAddress: string;
   private httpClient: HttpClient;
@@ -73,41 +75,20 @@ class AlgorithmiaClient {
     published = true,
     marker?: string
   ) {
-    if (marker == undefined) {
-      return this.httpClient.get(
-        this.apiAddress +
-          this.algorithmsPrefix +
-          '/' +
-          userName +
-          '/' +
-          algoName +
-          '/versions' +
-          '?callable=' +
-          callable +
-          '&limit=' +
-          limit +
-          '&published=' +
-          published
-      );
-    } else {
-      return this.httpClient.get(
-        this.apiAddress +
-          this.algorithmsPrefix +
-          '/' +
-          userName +
-          '/' +
-          algoName +
-          '/versions' +
-          '?callable=' +
-          callable +
-          '&limit=' +
-          limit +
-          '&published=' +
-          published +
-          '&marker=' +
-          marker
-      );
+    const path = `${this.algorithmsPrefix}/${userName}/${algoName}/versions`;
+    const params = new URLSearchParams({
+      callable: callable.toString(),
+      limit: limit.toString(),
+      published: published.toString(),
+    });
+
+    if (marker) {
+      params.set('marker', marker);
     }
+
+    const search = `?${params.toString()}`;
+
+    return this.httpClient.get(`${this.apiAddress}${path}${search}`);
   }
 
   /**
@@ -124,33 +105,18 @@ class AlgorithmiaClient {
     limit = 50,
     marker?: string
   ) {
-    if (marker == undefined) {
-      return this.httpClient.get(
-        this.apiAddress +
-          this.algorithmsPrefix +
-          '/' +
-          userName +
-          '/' +
-          algoName +
-          '/builds' +
-          '?limit=' +
-          limit
-      );
-    } else {
-      return this.httpClient.get(
-        this.apiAddress +
-          this.algorithmsPrefix +
-          '/' +
-          userName +
-          '/' +
-          algoName +
-          '/builds' +
-          '?limit=' +
-          limit +
-          '&marker=' +
-          marker
-      );
+    const path = `${this.algorithmsPrefix}/${userName}/${algoName}/builds`;
+    const params = new URLSearchParams({
+      limit: limit.toString(),
+    });
+
+    if (marker) {
+      params.set('marker', marker);
     }
+
+    const search = `?${params.toString()}`;
+
+    return this.httpClient.get(`${this.apiAddress}${path}${search}`);
   }
 
   /**
@@ -161,17 +127,8 @@ class AlgorithmiaClient {
    * @return a BuildLogs object for the specified algorithm
    */
   getAlgoBuildLogs(userName: string, algoName: string, buildId: string) {
-    return this.httpClient.get(
-      this.apiAddress +
-        this.algorithmsPrefix +
-        '/' +
-        userName +
-        '/' +
-        algoName +
-        '/builds/' +
-        buildId +
-        '/logs'
-    );
+    const path = `${this.algorithmsPrefix}/${userName}/${algoName}/builds/${buildId}/logs`;
+    return this.httpClient.get(`${this.apiAddress}${path}`);
   }
 
   /**
@@ -237,6 +194,44 @@ class AlgorithmiaClient {
   /*revokeSCMStatus(scmId: string) {
       return this.httpClient.post(this.apiAddress + this.scmPrefix + '/' + scmId + '/oauth/revoke', {});
   }*/
+
+  /**
+   * Create an organization from this client
+   * @param requestObject object payload
+   * @return an organization object
+   */
+  createOrganization(requestObject: Input) {
+    const contentType = 'application/json';
+    return this.httpClient.post(
+      this.apiAddress + this.organizationPrefix,
+      requestObject,
+      contentType
+    );
+  }
+
+  /**
+   * Get an organization from this client
+   * @param orgName the organization name
+   * @return an organization object
+   */
+  getOrganization(orgName: string) {
+    return this.httpClient.get(
+      this.apiAddress + this.organizationPrefix + '/' + orgName
+    );
+  }
+
+  /**
+   * Edit an organization from this client
+   * @param orgName the organization name
+   * @param requestObject payload
+   * @return an empty response
+   */
+  editOrganization(orgName: string, requestObject: Input) {
+    return this.httpClient.put(
+      this.apiAddress + this.organizationPrefix + '/' + orgName,
+      JSON.stringify(requestObject)
+    );
+  }
 
   /**
    * Initialize an DataFile object from this client

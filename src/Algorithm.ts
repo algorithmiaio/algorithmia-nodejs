@@ -225,6 +225,20 @@ class Build {
   }
 }
 
+interface Organization {
+  org_contact_name: string;
+  org_email: string;
+  org_label: string;
+  org_name: string;
+  resource_type: string;
+
+  org_url?: string;
+  external_id?: string;
+  external_admin_group_id?: string;
+  external_member_group_id?: string;
+  self_link?: string;
+}
+
 interface AlgorithmVersionsList {
   marker: string;
   next_link: string;
@@ -260,4 +274,5 @@ export {
   AlgorithmVersionsList,
   AlgorithmBuildsList,
   AlgorithmSCMAuthorizationStatus,
+  Organization,
 };

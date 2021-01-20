@@ -5,6 +5,7 @@ import {
   AlgorithmVersionsList,
   AlgorithmBuildsList,
   AlgorithmSCMAuthorizationStatus,
+  Organization,
 } from '../src/Algorithm';
 
 describe('Localisation initialization', () => {
@@ -139,4 +140,53 @@ describe('Localisation initialization', () => {
             expect(response).toBe('');
         });
     });*/
+
+  describe('organization get organization', () => {
+    it('gets an organization', async () => {
+      const organization: Organization = JSON.parse(
+        await Algorithmia.getClient(
+          process.env.ALGORITHMIA_ADMIN_API_KEY,
+          process.env.ALGORITHMIA_TEST_ADDRESS
+        ).getOrganization('a_myOrg15')
+      );
+
+      expect(organization.org_email).toBe('a_myOrg15@algo.com');
+    });
+  });
+
+  describe('organization edit call', () => {
+    it('edits for organization', async () => {
+      const response = await Algorithmia.getClient(
+        process.env.ALGORITHMIA_ADMIN_API_KEY,
+        process.env.ALGORITHMIA_TEST_ADDRESS
+      ).editOrganization('MyOrg1606332498213', {
+        org_contact_name: 'some owner',
+        org_email: 'SomeEmail@Whatsittoyou.com',
+        org_label: 'myLabel',
+        type_id: '3d40e3b0-d82a-11ea-9a3c-0ee5e2d35097',
+        resource_type: 'organization',
+        id: '3d9a9f41-d82a-11ea-9a3c-0ee5e2d35097',
+      });
+      expect(response).toBe('');
+    });
+  });
+
+  describe('organization create call', () => {
+    it('creates for organization', async () => {
+      const testOrganization = {
+        org_contact_name: 'some owner',
+        org_email: 'SomeEmail@Whatsittoyou.com',
+        org_label: 'myLabel',
+        org_name: 'MyOrg' + Date.now(),
+      };
+
+      const organization: Organization = JSON.parse(
+        await Algorithmia.getClient(
+          process.env.ALGORITHMIA_ADMIN_API_KEY,
+          process.env.ALGORITHMIA_TEST_ADDRESS
+        ).createOrganization(testOrganization)
+      );
+      expect(organization.org_name).toBe(testOrganization.org_name);
+    });
+  });
 });

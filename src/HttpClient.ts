@@ -54,6 +54,7 @@ class HttpClient {
   }
 
   async put(path: string, data: string) {
+    this.headers['Content-Type'] = 'application/json';
     const response = await this.httpClient.put(path, data, this.headers);
 
     return response.readBody();
