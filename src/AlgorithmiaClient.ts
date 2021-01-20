@@ -79,7 +79,7 @@ class AlgorithmiaClient {
     const params = new URLSearchParams({
       callable: callable.toString(),
       limit: limit.toString(),
-      published: published.toString()
+      published: published.toString(),
     });
 
     if (marker) {
@@ -196,34 +196,41 @@ class AlgorithmiaClient {
   }*/
 
   /**
-     * Create an organization from this client
-     * @param requestObject object payload
-     * @return an organization object
-     */
+   * Create an organization from this client
+   * @param requestObject object payload
+   * @return an organization object
+   */
   createOrganization(requestObject: Input) {
     const contentType = 'application/json';
-    return this.httpClient.post(this.apiAddress + this.organizationPrefix,
+    return this.httpClient.post(
+      this.apiAddress + this.organizationPrefix,
       requestObject,
-      contentType);
+      contentType
+    );
   }
 
   /**
-     * Get an organization from this client
-     * @param orgName the organization name
-     * @return an organization object
-     */
+   * Get an organization from this client
+   * @param orgName the organization name
+   * @return an organization object
+   */
   getOrganization(orgName: string) {
-    return this.httpClient.get(this.apiAddress + this.organizationPrefix + '/' + orgName);
+    return this.httpClient.get(
+      this.apiAddress + this.organizationPrefix + '/' + orgName
+    );
   }
 
   /**
-     * Edit an organization from this client
-     * @param orgName the organization name
-     * @param requestObject payload
-     * @return an empty response
-     */
-  editOrganization(orgName: string, requestObject: Object) {
-    return this.httpClient.put(this.apiAddress + this.organizationPrefix + '/' + orgName, JSON.stringify(requestObject));
+   * Edit an organization from this client
+   * @param orgName the organization name
+   * @param requestObject payload
+   * @return an empty response
+   */
+  editOrganization(orgName: string, requestObject: Input) {
+    return this.httpClient.put(
+      this.apiAddress + this.organizationPrefix + '/' + orgName,
+      JSON.stringify(requestObject)
+    );
   }
 
   /**

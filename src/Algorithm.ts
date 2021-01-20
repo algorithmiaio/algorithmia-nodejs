@@ -274,5 +274,5 @@ export {
   AlgorithmVersionsList,
   AlgorithmBuildsList,
   AlgorithmSCMAuthorizationStatus,
-  Organization
+  Organization,
 };

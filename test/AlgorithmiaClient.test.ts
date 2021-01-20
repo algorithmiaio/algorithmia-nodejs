@@ -146,10 +146,11 @@ describe('Localisation initialization', () => {
       const testOrganization = createTestOrganization();
       const organization: Organization = JSON.parse(
         await Algorithmia.getClient(
-          process.env.ALGORITHMIA_ADMIN_API_KEY, process.env.ALGORITHMIA_TEST_ADDRESS
+          process.env.ALGORITHMIA_ADMIN_API_KEY,
+          process.env.ALGORITHMIA_TEST_ADDRESS
         ).createOrganization(testOrganization)
       );
-      expect(organization.org_name).toBe(testOrganization.org_name)
+      expect(organization.org_name).toBe(testOrganization.org_name);
     });
   });
 
@@ -157,7 +158,8 @@ describe('Localisation initialization', () => {
     it('gets an organization', async () => {
       const organization: Organization = JSON.parse(
         await Algorithmia.getClient(
-          process.env.ALGORITHMIA_ADMIN_API_KEY, process.env.ALGORITHMIA_TEST_ADDRESS
+          process.env.ALGORITHMIA_ADMIN_API_KEY,
+          process.env.ALGORITHMIA_TEST_ADDRESS
         ).getOrganization('a_myOrg15')
       );
 
@@ -168,10 +170,10 @@ describe('Localisation initialization', () => {
   describe('organization edit call', () => {
     it('edits for organization', async () => {
       const testOrganization = editTestOrganization();
-      const response =
-        await Algorithmia.getClient(
-          process.env.ALGORITHMIA_ADMIN_API_KEY, process.env.ALGORITHMIA_TEST_ADDRESS
-        ).editOrganization('MyOrg1606332498213', testOrganization);
+      const response = await Algorithmia.getClient(
+        process.env.ALGORITHMIA_ADMIN_API_KEY,
+        process.env.ALGORITHMIA_TEST_ADDRESS
+      ).editOrganization('MyOrg1606332498213', testOrganization);
       expect(response).toBe('');
     });
   });
@@ -183,7 +185,7 @@ describe('Localisation initialization', () => {
       org_email: 'SomeEmail@Whatsittoyou.com',
       org_label: 'myLabel',
       org_name: 'MyOrg' + Date.now(),
-    }
+    };
     return requestObject;
   }
 
@@ -195,9 +197,8 @@ describe('Localisation initialization', () => {
       org_label: 'myLabel',
       type_id: '3d40e3b0-d82a-11ea-9a3c-0ee5e2d35097',
       resource_type: 'organization',
-      id: '3d9a9f41-d82a-11ea-9a3c-0ee5e2d35097'
-    }
+      id: '3d9a9f41-d82a-11ea-9a3c-0ee5e2d35097',
+    };
     return requestObject;
   }
-
 });
