@@ -4,7 +4,6 @@ import type { Input } from './ContentTypeHelper';
 import { DataFile, DataDir } from './Data';
 import { URLSearchParams } from 'url';
 import { Organization, OrgTypes } from './Algorithm';
-import { stringify } from 'querystring';
 
 class AlgorithmiaClient {
   private defaultApiAddress = 'https://api.algorithmia.com';
@@ -14,6 +13,7 @@ class AlgorithmiaClient {
   private scmPrefix = '/v1/scms';
   private organizationPrefix = '/v1/organization';
   private organizationsPrefix = '/v1/organizations';
+  private typesMapList: OrgTypes[] = [];
   private key: string;
   private apiAddress: string;
   private httpClient: HttpClient;
@@ -242,8 +242,10 @@ class AlgorithmiaClient {
   async organizationTypeIdChanger(requestObject: Input) {
     let editedOrganization: Organization = JSON.parse(JSON.stringify(requestObject));
     let isSet = false;
-    let typesMapList: OrgTypes[] = JSON.parse(await this.getOrgTypes());
-    for (var type of typesMapList) {
+    if (!this.typesMapList.length) {
+      this.typesMapList = JSON.parse(await this.getOrgTypes());
+    }
+    for (var type of this.typesMapList) {
       if(type.name === editedOrganization.type_id) {
         editedOrganization.type_id = type.id;
         isSet = true;
