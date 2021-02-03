@@ -206,7 +206,7 @@ class AlgorithmiaClient {
   async createOrganization(requestObject: Input) {
     const contentType = 'application/json';
     return this.httpClient.post(
-      this.apiAddress + this.organizationsPrefix,
+      `${this.apiAddress}${this.organizationsPrefix}`,
       JSON.stringify(await this.organizationTypeIdChanger(requestObject)),
       contentType
       );
@@ -219,7 +219,7 @@ class AlgorithmiaClient {
    */
   getOrganization(orgName: string) {
     return this.httpClient.get(
-      this.apiAddress + this.organizationsPrefix + '/' + orgName
+      `${this.apiAddress}${this.organizationsPrefix}/${orgName}`
     );
   }
 
@@ -231,7 +231,7 @@ class AlgorithmiaClient {
    */
   async editOrganization(orgName: string, requestObject: Input) {
     return this.httpClient.put(
-      this.apiAddress + this.organizationsPrefix + '/' + orgName,
+      `${this.apiAddress}${this.organizationsPrefix}/${orgName}`,
       JSON.stringify(await this.organizationTypeIdChanger(requestObject))
     );
   }
@@ -260,7 +260,7 @@ class AlgorithmiaClient {
    * Get types uuid endpoint
    */
   getOrgTypes() {
-    return this.httpClient.get(this.apiAddress + this.organizationPrefix + '/types');
+    return this.httpClient.get(`${this.apiAddress}${this.organizationPrefix}/types`);
   }
 
   /**
