@@ -3,6 +3,8 @@ import { AlgorithmExecutable } from './AlgorithmExecutable';
 import type { Input } from './ContentTypeHelper';
 import { DataFile, DataDir } from './Data';
 import { URLSearchParams } from 'url';
+import { Organization, OrgTypes } from './Algorithm';
+import { stringify } from 'querystring';
 
 class AlgorithmiaClient {
   private defaultApiAddress = 'https://api.algorithmia.com';
@@ -10,7 +12,8 @@ class AlgorithmiaClient {
   private algorithmsPrefix = '/v1/algorithms';
   private dataPrefix = '/v1/data';
   private scmPrefix = '/v1/scms';
-  private organizationPrefix = '/v1/organizations';
+  private organizationPrefix = '/v1/organization';
+  private organizationsPrefix = '/v1/organizations';
   private key: string;
   private apiAddress: string;
   private httpClient: HttpClient;
@@ -151,7 +154,7 @@ class AlgorithmiaClient {
    */
   createAlgo(userName: string, requestObject: Input) {
     const contentType = 'application/json';
-    return this.httpClient.post(
+    return this.httpClient.postAlgo(
       this.apiAddress + this.algorithmsPrefix + '/' + userName,
       requestObject,
       contentType
@@ -200,13 +203,13 @@ class AlgorithmiaClient {
    * @param requestObject object payload
    * @return an organization object
    */
-  createOrganization(requestObject: Input) {
+  async createOrganization(requestObject: Input) {
     const contentType = 'application/json';
     return this.httpClient.post(
-      this.apiAddress + this.organizationPrefix,
-      requestObject,
+      this.apiAddress + this.organizationsPrefix,
+      JSON.stringify(await this.organizationTypeIdChanger(requestObject)),
       contentType
-    );
+      );
   }
 
   /**
@@ -216,7 +219,7 @@ class AlgorithmiaClient {
    */
   getOrganization(orgName: string) {
     return this.httpClient.get(
-      this.apiAddress + this.organizationPrefix + '/' + orgName
+      this.apiAddress + this.organizationsPrefix + '/' + orgName
     );
   }
 
@@ -226,11 +229,38 @@ class AlgorithmiaClient {
    * @param requestObject payload
    * @return an empty response
    */
-  editOrganization(orgName: string, requestObject: Input) {
+  async editOrganization(orgName: string, requestObject: Input) {
     return this.httpClient.put(
-      this.apiAddress + this.organizationPrefix + '/' + orgName,
-      JSON.stringify(requestObject)
+      this.apiAddress + this.organizationsPrefix + '/' + orgName,
+      JSON.stringify(await this.organizationTypeIdChanger(requestObject))
     );
+  }
+
+  /**
+   * Helper for swapping out the type_id value
+   */
+  async organizationTypeIdChanger(requestObject: Input) {
+    let editedOrganization: Organization = JSON.parse(JSON.stringify(requestObject));
+    let isSet = false;
+    let typesMapList: OrgTypes[] = JSON.parse(await this.getOrgTypes());
+    for (var type of typesMapList) {
+      if(type.name === editedOrganization.type_id) {
+        editedOrganization.type_id = type.id;
+        isSet = true;
+        break;
+      };
+    }
+    if (!isSet) {
+      throw new TypeError("No matching value found");
+    }
+    return editedOrganization;
+  }
+
+  /**
+   * Get types uuid endpoint
+   */
+  getOrgTypes() {
+    return this.httpClient.get(this.apiAddress + this.organizationPrefix + '/types');
   }
 
   /**

@@ -231,12 +231,18 @@ interface Organization {
   org_label: string;
   org_name: string;
   resource_type: string;
+  type_id: string;
 
   org_url?: string;
   external_id?: string;
   external_admin_group_id?: string;
   external_member_group_id?: string;
   self_link?: string;
+}
+
+interface OrgTypes{
+  id:string,
+  name:string
 }
 
 interface AlgorithmVersionsList {
@@ -275,4 +281,5 @@ export {
   AlgorithmBuildsList,
   AlgorithmSCMAuthorizationStatus,
   Organization,
+  OrgTypes
 };
