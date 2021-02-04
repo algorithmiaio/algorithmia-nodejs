@@ -11,7 +11,7 @@ class AlgorithmiaClient {
   private algorithmsPrefix = '/v1/algorithms';
   private dataPrefix = '/v1/data';
   private scmPrefix = '/v1/scms';
-  private organizationPrefix = '/v1/organization';
+  private organizationTypePrefix = '/v1/organization';
   private organizationsPrefix = '/v1/organizations';
   private typesMapList: OrgTypes[] = [];
   private key: string;
@@ -253,7 +253,7 @@ class AlgorithmiaClient {
       };
     }
     if (!isSet) {
-      throw new TypeError("No matching value found");
+      throw new TypeError("No matching organization type found, should be one of 'legacy', 'basic', 'pro'");
     }
     return editedOrganization;
   }
@@ -262,7 +262,7 @@ class AlgorithmiaClient {
    * Get types uuid endpoint
    */
   getOrgTypes() {
-    return this.httpClient.get(`${this.apiAddress}${this.organizationPrefix}/types`);
+    return this.httpClient.get(`${this.apiAddress}${this.organizationTypePrefix}/types`);
   }
 
   /**
