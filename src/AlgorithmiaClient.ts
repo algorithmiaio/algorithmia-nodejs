@@ -243,7 +243,7 @@ class AlgorithmiaClient {
     let editedOrganization: Organization = JSON.parse(JSON.stringify(requestObject));
     let isSet = false;
     if (!this.typesMapList.length) {
-      this.typesMapList = JSON.parse(await this.getOrgTypes());
+      this.typesMapList = await this.getOrgTypes();
     }
     for (var type of this.typesMapList) {
       if(type.name === editedOrganization.type_id) {
@@ -261,8 +261,8 @@ class AlgorithmiaClient {
   /**
    * Get types uuid endpoint
    */
-  getOrgTypes() {
-    return this.httpClient.get(`${this.apiAddress}${this.organizationTypePrefix}/types`);
+  async getOrgTypes() {
+    return JSON.parse(await this.httpClient.get(`${this.apiAddress}${this.organizationTypePrefix}/types`));
   }
 
   /**
