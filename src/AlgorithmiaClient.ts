@@ -3,7 +3,7 @@ import { AlgorithmExecutable } from './AlgorithmExecutable';
 import type { Input } from './ContentTypeHelper';
 import { DataFile, DataDir } from './Data';
 import { URLSearchParams } from 'url';
-import { Organization, OrgTypes } from './Algorithm';
+import { Organization, OrgType, OrgTypes } from './Algorithm';
 
 class AlgorithmiaClient {
   private defaultApiAddress = 'https://api.algorithmia.com';
@@ -203,11 +203,11 @@ class AlgorithmiaClient {
    * @param requestObject object payload
    * @return an organization object
    */
-  async createOrganization(requestObject: Input) {
+  async createOrganization(requestObject: Input, type: OrgType) {
     const contentType = 'application/json';
     return this.httpClient.post(
       `${this.apiAddress}${this.organizationsPrefix}`,
-      JSON.stringify(await this.organizationTypeIdChanger(requestObject)),
+      JSON.stringify(await this.organizationTypeIdChanger(requestObject, type)),
       contentType
       );
   }
@@ -229,31 +229,31 @@ class AlgorithmiaClient {
    * @param requestObject payload
    * @return an empty response
    */
-  async editOrganization(orgName: string, requestObject: Input) {
+  editOrganization(orgName: string, requestObject: Input) {
     return this.httpClient.put(
-      `${this.apiAddress}${this.organizationsPrefix}/${orgName}`,
-      JSON.stringify(await this.organizationTypeIdChanger(requestObject))
+      `${this.apiAddress}${this.organizationsPrefix}/${orgName}`, 
+       requestObject
     );
   }
 
   /**
    * Helper for swapping out the type_id value
    */
-  async organizationTypeIdChanger(requestObject: Input) {
+  async organizationTypeIdChanger(requestObject: Input, type: OrgType) {
     let editedOrganization: Organization = JSON.parse(JSON.stringify(requestObject));
     let isSet = false;
     if (!this.typesMapList.length) {
       this.typesMapList = await this.getOrgTypes();
     }
-    for (var type of this.typesMapList) {
-      if(type.name === editedOrganization.type_id) {
-        editedOrganization.type_id = type.id;
+    for (var typesMapObject of this.typesMapList) {
+      if(type === typesMapObject.name) {
+        editedOrganization.type_id = typesMapObject.id;
         isSet = true;
         break;
       };
     }
     if (!isSet) {
-      throw new TypeError("No matching organization type found, should be one of 'legacy', 'basic', 'pro'");
+      throw new Error("No matching organization type found, should be one of 'legacy', 'basic', 'pro'");
     }
     return editedOrganization;
   }

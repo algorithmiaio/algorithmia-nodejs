@@ -240,9 +240,15 @@ interface Organization {
   self_link?: string;
 }
 
-interface OrgTypes{
-  id: string,
-  name: string
+interface OrgTypes {
+  id: string;
+  name: string;
+}
+
+enum OrgType {
+  Basic = 'basic',
+  Legacy = 'legacy',
+  Pro = 'pro'
 }
 
 interface AlgorithmVersionsList {
@@ -281,5 +287,6 @@ export {
   AlgorithmBuildsList,
   AlgorithmSCMAuthorizationStatus,
   Organization,
-  OrgTypes
+  OrgTypes,
+  OrgType
 };

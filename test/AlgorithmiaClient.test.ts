@@ -6,6 +6,7 @@ import {
   AlgorithmBuildsList,
   AlgorithmSCMAuthorizationStatus,
   Organization,
+  OrgType
 } from '../src/Algorithm';
 
 describe('Localisation initialization', () => {
@@ -147,25 +148,25 @@ describe('Localisation initialization', () => {
         await Algorithmia.getClient(
           process.env.ALGORITHMIA_ADMIN_API_KEY,
           process.env.ALGORITHMIA_TEST_ADDRESS
-        ).getOrganization('a_myOrg15')
+        ).getOrganization('MyOrg1614039696593')
       );
 
-      expect(organization.org_email).toBe('a_myOrg15@algo.com');
+      expect(organization.org_name).toBe('MyOrg1614039696593');
     });
   });
 
   describe('organization edit call', () => {
     it('edits for organization', async () => {
+      const organization: Organization = JSON.parse(
+        await Algorithmia.getClient(
+          process.env.ALGORITHMIA_ADMIN_API_KEY,
+          process.env.ALGORITHMIA_TEST_ADDRESS
+        ).getOrganization('MyOrg1614039696593'));
+      organization.org_email = 'SomeOtherEmail@HowDoYouEven.com'
       const response = await Algorithmia.getClient(
         process.env.ALGORITHMIA_ADMIN_API_KEY,
         process.env.ALGORITHMIA_TEST_ADDRESS
-      ).editOrganization('MyOrg1606329175792', {
-        org_contact_name: 'some owner',
-        org_email: 'SomeEmail@Whatsittoyou.com',
-        org_label: 'myLabel',
-        resource_type: 'organization',
-        type_id: 'legacy',
-      });
+      ).editOrganization(organization.org_name, JSON.stringify(organization));
       expect(response).toBe('');
     });
   });
@@ -177,15 +178,14 @@ describe('Localisation initialization', () => {
         org_email: 'SomeEmail@Whatsittoyou.com',
         org_label: 'myLabel',
         org_name: 'MyOrg' + Date.now(),
-        resource_type: 'organization',
-        type_id: 'basic',
+        resource_type: 'organization'
       };
 
       const organization: Organization = JSON.parse(
         await Algorithmia.getClient(
           process.env.ALGORITHMIA_ADMIN_API_KEY,
           process.env.ALGORITHMIA_TEST_ADDRESS
-        ).createOrganization(testOrganization)
+        ).createOrganization(testOrganization, OrgType.Legacy)
       );
       expect(organization.org_name).toBe(testOrganization.org_name);
     });
