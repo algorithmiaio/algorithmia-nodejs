@@ -161,7 +161,7 @@ describe('Localisation initialization', () => {
         await Algorithmia.getClient(
           process.env.ALGORITHMIA_ADMIN_API_KEY,
           process.env.ALGORITHMIA_TEST_ADDRESS
-        ).getOrganization('MyOrg1614039696593'));
+        ).getOrganization('MyOrg1614118479820'));
       organization.org_email = 'SomeOtherEmail@HowDoYouEven.com'
       const response = await Algorithmia.getClient(
         process.env.ALGORITHMIA_ADMIN_API_KEY,
@@ -178,6 +178,7 @@ describe('Localisation initialization', () => {
         org_email: 'SomeEmail@Whatsittoyou.com',
         org_label: 'myLabel',
         org_name: 'MyOrg' + Date.now(),
+        org_url: 'https://algorithmia.com',
         resource_type: 'organization'
       };
 

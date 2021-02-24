@@ -232,8 +232,8 @@ interface Organization {
   org_name: string;
   resource_type: string;
   type_id: string;
+  org_url: string;
 
-  org_url?: string;
   external_id?: string;
   external_admin_group_id?: string;
   external_member_group_id?: string;

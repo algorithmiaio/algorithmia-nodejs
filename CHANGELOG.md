@@ -1,5 +1,15 @@
 # Changlog
 
+## v2.0.0 - 02/23/2021
+
+----------------
+
+### Changes
+
+- Create organization endpoint now takes in second parameter for user-friendly type name
+- org_url is required
+
+
 ## v1.0.0 - 01/08/2021
 
 -----------------
