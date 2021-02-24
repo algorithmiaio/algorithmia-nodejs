@@ -236,11 +236,15 @@ class AlgorithmiaClient {
     );
   }
 
+  clone(obj: Input) {
+    return JSON.parse(JSON.stringify(obj));
+  }
+ 
   /**
    * Helper for swapping out the type_id value
    */
   async organizationTypeIdChanger(requestObject: Input, type: OrgType) {
-    let editedOrganization: Organization = JSON.parse(JSON.stringify(requestObject));
+    const editedOrganization: Organization = this.clone(requestObject);
     let isSet = false;
     if (!this.typesMapList.length) {
       this.typesMapList = await this.getOrgTypes();
