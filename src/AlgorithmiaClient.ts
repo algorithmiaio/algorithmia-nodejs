@@ -154,7 +154,7 @@ class AlgorithmiaClient {
    */
   createAlgo(userName: string, requestObject: Input) {
     const contentType = 'application/json';
-    return this.httpClient.postAlgo(
+    return this.httpClient.post(
       this.apiAddress + this.algorithmsPrefix + '/' + userName,
       requestObject,
       contentType
@@ -217,10 +217,11 @@ class AlgorithmiaClient {
    * @param orgName the organization name
    * @return an organization object
    */
-  getOrganization(orgName: string) {
-    return this.httpClient.get(
-      `${this.apiAddress}${this.organizationsPrefix}/${orgName}`
-    );
+  async getOrganization(orgName: string) : Promise<Organization> {
+    const organization: Organization = JSON.parse(await this.httpClient.get(
+        `${this.apiAddress}${this.organizationsPrefix}/${orgName}`
+      ));
+      return organization;
   }
 
   /**

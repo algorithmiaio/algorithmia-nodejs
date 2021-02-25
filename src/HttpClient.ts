@@ -32,31 +32,27 @@ class HttpClient {
     return response.message.statusCode === 200;
   }
 
-  async postAlgo(path: string, data: Input, contentType: string) {
+  async post(path: string, data: Input, contentType: string) {
     this.headers['Content-Type'] = contentType;
+    const toString = (data: unknown) =>
+    typeof data === 'string' ? data : JSON.stringify(data, null, 2)
     const response = await this.httpClient.post(
       path,
-      JSON.stringify(data),
+      toString(data),
       this.headers
     );
 
     return response.readBody();
   }
 
-  async post(path: string, data: string, contentType: string) {
-    this.headers['Content-Type'] = contentType;
-    const response = await this.httpClient.post(
-      path,
-      data,
-      this.headers
-    );
-
-    return response.readBody();
-  }
-
-  async put(path: string, data: string) {
+  async put(path: string, data: Input) {
     this.headers['Content-Type'] = 'application/json';
-    const response = await this.httpClient.put(path, data, this.headers);
+    const toString = (data: unknown) =>
+    typeof data === 'string' ? data : JSON.stringify(data, null, 2)
+    const response = await this.httpClient.put(
+      path, 
+      toString(data),
+      this.headers);
 
     return response.readBody();
   }

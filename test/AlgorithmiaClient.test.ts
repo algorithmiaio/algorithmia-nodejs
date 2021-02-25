@@ -144,12 +144,11 @@ describe('Localisation initialization', () => {
 
   describe('organization get organization', () => {
     it('gets an organization', async () => {
-      const organization: Organization = JSON.parse(
+      const organization: Organization = 
         await Algorithmia.getClient(
           process.env.ALGORITHMIA_ADMIN_API_KEY,
           process.env.ALGORITHMIA_TEST_ADDRESS
-        ).getOrganization('MyOrg1614039696593')
-      );
+        ).getOrganization('MyOrg1614039696593');
 
       expect(organization.org_name).toBe('MyOrg1614039696593');
     });
@@ -157,11 +156,11 @@ describe('Localisation initialization', () => {
 
   describe('organization edit call', () => {
     it('edits for organization', async () => {
-      const organization: Organization = JSON.parse(
+      const organization: Organization = 
         await Algorithmia.getClient(
           process.env.ALGORITHMIA_ADMIN_API_KEY,
           process.env.ALGORITHMIA_TEST_ADDRESS
-        ).getOrganization('MyOrg1614118479820'));
+        ).getOrganization('MyOrg1614118479820');
       organization.org_email = 'SomeOtherEmail@HowDoYouEven.com'
       const response = await Algorithmia.getClient(
         process.env.ALGORITHMIA_ADMIN_API_KEY,

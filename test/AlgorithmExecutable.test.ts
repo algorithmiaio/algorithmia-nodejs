@@ -14,7 +14,7 @@ describe('Localisation initialization', () => {
         .algo('nlb/Hello/1.0.0')
         .pipe('foo');
 
-      expect(result).toBe('Hello "foo"');
+      expect(result).toBe('Hello foo');
     });
   });
 });

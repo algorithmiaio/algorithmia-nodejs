@@ -30,7 +30,7 @@ class AlgorithmExecutable {
 
     const fullPath = `${pathname}?${params.toString()}`;
 
-    return this.client.postAlgo(fullPath, input, contentType);
+    return this.client.post(fullPath, input, contentType);
   }
 }
 
