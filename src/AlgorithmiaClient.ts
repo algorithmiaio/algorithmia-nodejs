@@ -3,6 +3,7 @@ import { AlgorithmExecutable } from './AlgorithmExecutable';
 import type { Input } from './ContentTypeHelper';
 import { DataFile, DataDir } from './Data';
 import { URLSearchParams } from 'url';
+import { Organization, OrgType, OrgTypes } from './Algorithm';
 
 class AlgorithmiaClient {
   private defaultApiAddress = 'https://api.algorithmia.com';
@@ -10,7 +11,9 @@ class AlgorithmiaClient {
   private algorithmsPrefix = '/v1/algorithms';
   private dataPrefix = '/v1/data';
   private scmPrefix = '/v1/scms';
-  private organizationPrefix = '/v1/organizations';
+  private organizationTypePrefix = '/v1/organization';
+  private organizationsPrefix = '/v1/organizations';
+  private typesMapList: OrgTypes[] = [];
   private key: string;
   private apiAddress: string;
   private httpClient: HttpClient;
@@ -200,13 +203,13 @@ class AlgorithmiaClient {
    * @param requestObject object payload
    * @return an organization object
    */
-  createOrganization(requestObject: Input) {
+  async createOrganization(requestObject: Input, type: OrgType) {
     const contentType = 'application/json';
     return this.httpClient.post(
-      this.apiAddress + this.organizationPrefix,
-      requestObject,
+      `${this.apiAddress}${this.organizationsPrefix}`,
+      JSON.stringify(await this.organizationTypeIdChanger(requestObject, type)),
       contentType
-    );
+      );
   }
 
   /**
@@ -214,10 +217,11 @@ class AlgorithmiaClient {
    * @param orgName the organization name
    * @return an organization object
    */
-  getOrganization(orgName: string) {
-    return this.httpClient.get(
-      this.apiAddress + this.organizationPrefix + '/' + orgName
-    );
+  async getOrganization(orgName: string) : Promise<Organization> {
+    const organization: Organization = JSON.parse(await this.httpClient.get(
+        `${this.apiAddress}${this.organizationsPrefix}/${orgName}`
+      ));
+      return organization;
   }
 
   /**
@@ -228,9 +232,42 @@ class AlgorithmiaClient {
    */
   editOrganization(orgName: string, requestObject: Input) {
     return this.httpClient.put(
-      this.apiAddress + this.organizationPrefix + '/' + orgName,
-      JSON.stringify(requestObject)
+      `${this.apiAddress}${this.organizationsPrefix}/${orgName}`, 
+       requestObject
     );
+  }
+
+  clone(obj: Input) {
+    return JSON.parse(JSON.stringify(obj));
+  }
+ 
+  /**
+   * Helper for swapping out the type_id value
+   */
+  async organizationTypeIdChanger(requestObject: Input, type: OrgType) {
+    const editedOrganization: Organization = this.clone(requestObject);
+    let isSet = false;
+    if (!this.typesMapList.length) {
+      this.typesMapList = await this.getOrgTypes();
+    }
+    for (var typesMapObject of this.typesMapList) {
+      if(type === typesMapObject.name) {
+        editedOrganization.type_id = typesMapObject.id;
+        isSet = true;
+        break;
+      };
+    }
+    if (!isSet) {
+      throw new Error("No matching organization type found, should be one of 'legacy', 'basic', 'pro'");
+    }
+    return editedOrganization;
+  }
+
+  /**
+   * Get types uuid endpoint
+   */
+  async getOrgTypes() {
+    return JSON.parse(await this.httpClient.get(`${this.apiAddress}${this.organizationTypePrefix}/types`));
   }
 
   /**

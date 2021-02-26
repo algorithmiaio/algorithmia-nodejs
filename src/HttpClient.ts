@@ -34,11 +34,25 @@ class HttpClient {
 
   async post(path: string, data: Input, contentType: string) {
     this.headers['Content-Type'] = contentType;
+    const toString = (data: unknown) =>
+    typeof data === 'string' ? data : JSON.stringify(data, null, 2)
     const response = await this.httpClient.post(
       path,
-      JSON.stringify(data),
+      toString(data),
       this.headers
     );
+
+    return response.readBody();
+  }
+
+  async put(path: string, data: Input) {
+    this.headers['Content-Type'] = 'application/json';
+    const toString = (data: unknown) =>
+    typeof data === 'string' ? data : JSON.stringify(data, null, 2)
+    const response = await this.httpClient.put(
+      path, 
+      toString(data),
+      this.headers);
 
     return response.readBody();
   }
@@ -49,13 +63,6 @@ class HttpClient {
       JSON.stringify(data),
       this.headers
     );
-
-    return response.readBody();
-  }
-
-  async put(path: string, data: string) {
-    this.headers['Content-Type'] = 'application/json';
-    const response = await this.httpClient.put(path, data, this.headers);
 
     return response.readBody();
   }
