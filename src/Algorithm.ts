@@ -248,7 +248,7 @@ interface OrgTypes {
 enum OrgType {
   Basic = 'basic',
   Legacy = 'legacy',
-  Pro = 'pro'
+  Pro = 'pro',
 }
 
 interface AlgorithmVersionsList {
@@ -288,5 +288,5 @@ export {
   AlgorithmSCMAuthorizationStatus,
   Organization,
   OrgTypes,
-  OrgType
+  OrgType,
 };

@@ -209,7 +209,7 @@ class AlgorithmiaClient {
       `${this.apiAddress}${this.organizationsPrefix}`,
       JSON.stringify(await this.organizationTypeIdChanger(requestObject, type)),
       contentType
-      );
+    );
   }
 
   /**
@@ -217,11 +217,13 @@ class AlgorithmiaClient {
    * @param orgName the organization name
    * @return an organization object
    */
-  async getOrganization(orgName: string) : Promise<Organization> {
-    const organization: Organization = JSON.parse(await this.httpClient.get(
+  async getOrganization(orgName: string): Promise<Organization> {
+    const organization: Organization = JSON.parse(
+      await this.httpClient.get(
         `${this.apiAddress}${this.organizationsPrefix}/${orgName}`
-      ));
-      return organization;
+      )
+    );
+    return organization;
   }
 
   /**
@@ -232,15 +234,15 @@ class AlgorithmiaClient {
    */
   editOrganization(orgName: string, requestObject: Input) {
     return this.httpClient.put(
-      `${this.apiAddress}${this.organizationsPrefix}/${orgName}`, 
-       requestObject
+      `${this.apiAddress}${this.organizationsPrefix}/${orgName}`,
+      requestObject
     );
   }
 
   clone(obj: Input) {
     return JSON.parse(JSON.stringify(obj));
   }
- 
+
   /**
    * Helper for swapping out the type_id value
    */
@@ -250,15 +252,17 @@ class AlgorithmiaClient {
     if (!this.typesMapList.length) {
       this.typesMapList = await this.getOrgTypes();
     }
-    for (var typesMapObject of this.typesMapList) {
-      if(type === typesMapObject.name) {
+    for (const typesMapObject of this.typesMapList) {
+      if (type === typesMapObject.name) {
         editedOrganization.type_id = typesMapObject.id;
         isSet = true;
         break;
-      };
+      }
     }
     if (!isSet) {
-      throw new Error("No matching organization type found, should be one of 'legacy', 'basic', 'pro'");
+      throw new Error(
+        "No matching organization type found, should be one of 'legacy', 'basic', 'pro'"
+      );
     }
     return editedOrganization;
   }
@@ -267,7 +271,11 @@ class AlgorithmiaClient {
    * Get types uuid endpoint
    */
   async getOrgTypes() {
-    return JSON.parse(await this.httpClient.get(`${this.apiAddress}${this.organizationTypePrefix}/types`));
+    return JSON.parse(
+      await this.httpClient.get(
+        `${this.apiAddress}${this.organizationTypePrefix}/types`
+      )
+    );
   }
 
   /**
