@@ -14,7 +14,7 @@
     "compile:watch": "tsc -w",
     "prepare": "npm run compile",
     "prepublishOnly": "npm test --detectOpenHandles",
-    "lint": "eslint '*/**/*.{js,ts}' --quiet",
+    "lint": "eslint ./src/**/*.{js,ts} --quiet",
     "lint:fix": "npm run lint -- --fix",
     "test": "jest"
   },

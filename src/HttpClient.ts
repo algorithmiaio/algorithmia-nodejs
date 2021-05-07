@@ -35,7 +35,7 @@ class HttpClient {
   async post(path: string, data: Input, contentType: string) {
     this.headers['Content-Type'] = contentType;
     const toString = (data: unknown) =>
-    typeof data === 'string' ? data : JSON.stringify(data, null, 2)
+      typeof data === 'string' ? data : JSON.stringify(data, null, 2);
     const response = await this.httpClient.post(
       path,
       toString(data),
@@ -48,11 +48,12 @@ class HttpClient {
   async put(path: string, data: Input) {
     this.headers['Content-Type'] = 'application/json';
     const toString = (data: unknown) =>
-    typeof data === 'string' ? data : JSON.stringify(data, null, 2)
+      typeof data === 'string' ? data : JSON.stringify(data, null, 2);
     const response = await this.httpClient.put(
-      path, 
+      path,
       toString(data),
-      this.headers);
+      this.headers
+    );
 
     return response.readBody();
   }
