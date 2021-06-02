@@ -21,12 +21,11 @@ describe('Localisation initialization', () => {
   describe('algorithm pipe call', () => {
     it('invokes algorithm', async () => {
       // create an algorithm.
-      await algoClient.createAlgo(ALGORITHMIA_TEST_USERNAME, testAlgo)
+      await algoClient.createAlgo(ALGORITHMIA_TEST_USERNAME, testAlgo);
 
-      const buildHash = JSON.parse(await algoClient.buildAlgo(
-        ALGORITHMIA_TEST_USERNAME,
-        testAlgo.name
-      )).version_info.git_hash
+      const buildHash = JSON.parse(
+        await algoClient.buildAlgo(ALGORITHMIA_TEST_USERNAME, testAlgo.name)
+      ).version_info.git_hash;
 
       // invoke algorithm.
       const result = await algoClient

@@ -49,15 +49,9 @@ describe('Localisation initialization', () => {
       // create an algorithm.
       await algoClient.createAlgo(ALGORITHMIA_TEST_USERNAME, testAlgo);
       // invoke algorithm build process.
-       await algoClient.buildAlgo(
-          ALGORITHMIA_TEST_USERNAME,
-          testAlgo.name,
-        )
+      await algoClient.buildAlgo(ALGORITHMIA_TEST_USERNAME, testAlgo.name);
 
-      await algoClient.publishAlgo(
-        ALGORITHMIA_TEST_USERNAME,
-        testAlgo.name
-      )
+      await algoClient.publishAlgo(ALGORITHMIA_TEST_USERNAME, testAlgo.name);
 
       const algorithmVersionsList: AlgorithmVersionsList = JSON.parse(
         await algoClient.listAlgoVersions(
@@ -66,7 +60,7 @@ describe('Localisation initialization', () => {
           false
         )
       );
-          
+
       expect(algorithmVersionsList.results.length).toBe(1);
 
       // delete the algorithm.
@@ -79,10 +73,7 @@ describe('Localisation initialization', () => {
       // create an algorithm.
       await algoClient.createAlgo(ALGORITHMIA_TEST_USERNAME, testAlgo);
       // invoke algorithm build process.
-      await algoClient.buildAlgo(
-        ALGORITHMIA_TEST_USERNAME,
-        testAlgo.name,
-      )
+      await algoClient.buildAlgo(ALGORITHMIA_TEST_USERNAME, testAlgo.name);
 
       const algorithmBuildsList: AlgorithmBuildsList = JSON.parse(
         await algoClient.listAlgoBuilds(
@@ -103,10 +94,7 @@ describe('Localisation initialization', () => {
       // create an algorithm.
       await algoClient.createAlgo(ALGORITHMIA_TEST_USERNAME, testAlgo);
       // invoke algorithm build process.
-      await algoClient.buildAlgo(
-        ALGORITHMIA_TEST_USERNAME,
-        testAlgo.name,
-      );
+      await algoClient.buildAlgo(ALGORITHMIA_TEST_USERNAME, testAlgo.name);
 
       const algorithmBuildsList: AlgorithmBuildsList = JSON.parse(
         await algoClient.listAlgoBuilds(
@@ -117,15 +105,15 @@ describe('Localisation initialization', () => {
 
       const response = JSON.parse(
         await algoClient.getAlgoBuildLogs(
-           ALGORITHMIA_TEST_USERNAME,
+          ALGORITHMIA_TEST_USERNAME,
           testAlgo.name,
           algorithmBuildsList.results[0].build_id
         )
       );
 
       expect(response.logs).toBeDefined;
-      expect(response.logs).toMatch('Beginning container customization')
-      
+      expect(response.logs).toMatch('Beginning container customization');
+
       // delete the algorithm.
       await algoClient.deleteAlgo(ALGORITHMIA_TEST_USERNAME, testAlgo.name);
     });
@@ -140,15 +128,18 @@ describe('Localisation initialization', () => {
 
       expect(algorithm.name).toBe(testAlgo.name);
 
-      const response = await algoClient.deleteAlgo(ALGORITHMIA_TEST_USERNAME, testAlgo.name);
+      const response = await algoClient.deleteAlgo(
+        ALGORITHMIA_TEST_USERNAME,
+        testAlgo.name
+      );
 
       expect(response).toBe('');
 
-      const deletedAlgo =
-        await algoClient.getAlgo(ALGORITHMIA_TEST_USERNAME, testAlgo.name)
-      ;
-
-      expect(deletedAlgo).toBe("{\"error\":\"No such algorithm\"}");
+      const deletedAlgo = await algoClient.getAlgo(
+        ALGORITHMIA_TEST_USERNAME,
+        testAlgo.name
+      );
+      expect(deletedAlgo).toBe('{"error":"No such algorithm"}');
     });
   });
 
@@ -167,7 +158,7 @@ describe('Localisation initialization', () => {
           pipeline_enabled: true,
           source_visibility: 'closed',
         },
-      }
+      };
       const algorithm: Algorithm = JSON.parse(
         await algoClient.createAlgo(ALGORITHMIA_TEST_USERNAME, anotherAlgo)
       );
@@ -179,21 +170,17 @@ describe('Localisation initialization', () => {
 
   describe('algorithm list scms call', () => {
     it('lists scms', async () => {
-      const response: SCM[] = JSON.parse(
-        await algoClient.listSCMs()
-      ).results;
+      const response: SCM[] = JSON.parse(await algoClient.listSCMs()).results;
 
-      const internalSCM = response.filter(scm => scm.id === 'internal')[0]
+      const internalSCM = response.filter((scm) => scm.id === 'internal')[0];
       expect(response.length > 0);
-      expect(internalSCM.provider).toBe('internal')
+      expect(internalSCM.provider).toBe('internal');
     });
   });
 
   describe('algorithm get scm call', () => {
     it('gets an scm', async () => {
-      const scm: SCM = JSON.parse(
-        await algoClient.getSCM('internal')
-      );
+      const scm: SCM = JSON.parse(await algoClient.getSCM('internal'));
 
       expect(scm.enabled).toBe(true);
     });
@@ -233,15 +220,23 @@ describe('Localisation initialization', () => {
       const algoAdminClient = Algorithmia.getClient(
         ALGORITHMIA_TEST_ADMIN_API_KEY,
         ALGORITHMIA_TEST_API_ADDRESS
-      )
-      const organization: Organization = await algoAdminClient.getOrganization('MyOrg1614118479820');
+      );
+      const organization: Organization = await algoAdminClient.getOrganization(
+        'MyOrg1614118479820'
+      );
 
       organization.org_email = 'SomeOtherEmail@SomeOtherEmail.com';
-      await algoAdminClient.editOrganization(organization.org_name, JSON.stringify(organization));
+      await algoAdminClient.editOrganization(
+        organization.org_name,
+        JSON.stringify(organization)
+      );
 
-      const organizationEdited: Organization = await algoAdminClient.getOrganization('MyOrg1614118479820');
+      const organizationEdited: Organization =
+        await algoAdminClient.getOrganization('MyOrg1614118479820');
 
-      expect(organizationEdited.org_email).toBe('SomeOtherEmail@SomeOtherEmail.com');
+      expect(organizationEdited.org_email).toBe(
+        'SomeOtherEmail@SomeOtherEmail.com'
+      );
     });
   });
 

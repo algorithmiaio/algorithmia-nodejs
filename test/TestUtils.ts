@@ -3,7 +3,7 @@ import assert from 'assert';
 
 dotenv.config();
 
-const envMessage = envVar =>
+const envMessage = (envVar) =>
   `Environment variable ${envVar} is required to run this test suite. Reference TEST.md to help set up this variable`;
 
 export const {
@@ -32,7 +32,7 @@ assert(
   envMessage(Object.keys({ ALGORITHMIA_TEST_API_ADDRESS })[0])
 );
 
-export const createTestAlgo = name => ({
+export const createTestAlgo = (name) => ({
   details: {
     label: 'My Test Algorithm',
   },

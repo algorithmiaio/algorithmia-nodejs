@@ -81,14 +81,17 @@ class AlgorithmiaClient {
    * @param algoName the name of the algorithm
    * @return an Algorithm published object for the specified algorithm
    */
-   publishAlgo(userName: string, algoName: string) {
+  publishAlgo(userName: string, algoName: string) {
     return this.httpClient.post(
       `${this.apiAddress}${this.algorithmsPrefix}/${userName}/${algoName}/version`,
-      {settings:{
-        algorithm_callability:"private",
-        insights_enabled:false,
-        royalty_microcredits:0
-      },version_info:{version_type:"revision"}},
+      {
+        settings: {
+          algorithm_callability: 'private',
+          insights_enabled: false,
+          royalty_microcredits: 0,
+        },
+        version_info: { version_type: 'revision' },
+      },
       'application/json'
     );
   }
@@ -163,7 +166,9 @@ class AlgorithmiaClient {
    * @return a BuildLogs object for the specified algorithm
    */
   getAlgoBuildLogs(userName: string, algoName: string, buildId: string) {
-    return this.httpClient.get(`${this.apiAddress}${this.algorithmsPrefix}/${userName}/${algoName}/builds/${buildId}/logs`);
+    return this.httpClient.get(
+      `${this.apiAddress}${this.algorithmsPrefix}/${userName}/${algoName}/builds/${buildId}/logs`
+    );
   }
 
   /**
