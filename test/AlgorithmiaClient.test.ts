@@ -6,116 +6,193 @@ import {
   AlgorithmBuildsList,
   AlgorithmSCMAuthorizationStatus,
   Organization,
-  OrgType
+  OrgType,
 } from '../src/Algorithm';
+import {
+  ALGORITHMIA_TEST_API_ADDRESS,
+  ALGORITHMIA_TEST_DEFAULT_API_KEY,
+  ALGORITHMIA_TEST_USERNAME,
+  ALGORITHMIA_TEST_ADMIN_API_KEY,
+  createTestAlgo,
+} from './TestUtils';
 
 describe('Localisation initialization', () => {
+  const testAlgo = createTestAlgo('test_algorithmia_client');
+  const algoClient = Algorithmia.getClient(
+    ALGORITHMIA_TEST_DEFAULT_API_KEY,
+    ALGORITHMIA_TEST_API_ADDRESS
+  );
+
   beforeEach(() => {
     jest.resetModules();
+    jest.setTimeout(60000);
   });
 
   describe('algorithm get call', () => {
     it('gets for algorithm', async () => {
+      // create an algorithm.
+      await algoClient.createAlgo(ALGORITHMIA_TEST_USERNAME, testAlgo);
+
       const algorithm: Algorithm = JSON.parse(
-        await Algorithmia.getClient(
-          process.env.ALGORITHMIA_DEFAULT_API_KEY
-        ).getAlgo('dherring', 'ResultFile')
+        await algoClient.getAlgo(ALGORITHMIA_TEST_USERNAME, testAlgo.name)
       );
 
-      expect(algorithm.name).toBe('ResultFile');
+      expect(algorithm.name).toBe(testAlgo.name);
+
+      // delete the algorithm.
+      await algoClient.deleteAlgo(ALGORITHMIA_TEST_USERNAME, testAlgo.name);
     });
   });
 
   describe('algorithm versions list call', () => {
     it('gets for algorithm versions list', async () => {
-      const algorithmVersionsList: AlgorithmVersionsList = JSON.parse(
-        await Algorithmia.getClient(
-          process.env.ALGORITHMIA_DEFAULT_API_KEY
-        ).listAlgoVersions('dherring', 'ResultFile')
-      );
+      // create an algorithm.
+      await algoClient.createAlgo(ALGORITHMIA_TEST_USERNAME, testAlgo);
+      // invoke algorithm build process.
+       await algoClient.buildAlgo(
+          ALGORITHMIA_TEST_USERNAME,
+          testAlgo.name,
+        )
 
-      expect(algorithmVersionsList.results.length).toBe(50);
+      await algoClient.publishAlgo(
+        ALGORITHMIA_TEST_USERNAME,
+        testAlgo.name
+      )
+
+      const algorithmVersionsList: AlgorithmVersionsList = JSON.parse(
+        await algoClient.listAlgoVersions(
+          ALGORITHMIA_TEST_USERNAME,
+          testAlgo.name,
+          false
+        )
+      );
+          
+      expect(algorithmVersionsList.results.length).toBe(1);
+
+      // delete the algorithm.
+      await algoClient.deleteAlgo(ALGORITHMIA_TEST_USERNAME, testAlgo.name);
     });
   });
 
   describe('algorithm builds list call', () => {
     it('gets for algorithm builds list', async () => {
+      // create an algorithm.
+      await algoClient.createAlgo(ALGORITHMIA_TEST_USERNAME, testAlgo);
+      // invoke algorithm build process.
+      await algoClient.buildAlgo(
+        ALGORITHMIA_TEST_USERNAME,
+        testAlgo.name,
+      )
+
       const algorithmBuildsList: AlgorithmBuildsList = JSON.parse(
-        await Algorithmia.getClient(
-          process.env.ALGORITHMIA_DEFAULT_API_KEY
-        ).listAlgoBuilds('dherring', 'ResultFile')
+        await algoClient.listAlgoBuilds(
+          ALGORITHMIA_TEST_USERNAME,
+          testAlgo.name
+        )
       );
 
-      expect(algorithmBuildsList.results.length).toBe(50);
+      expect(algorithmBuildsList.results.length).toBe(1);
+
+      // delete the algorithm.
+      await algoClient.deleteAlgo(ALGORITHMIA_TEST_USERNAME, testAlgo.name);
     });
   });
 
   describe('algorithm builds log call', () => {
     it('gets for algorithm build logs', async () => {
-      const response: [] = JSON.parse(
-        await Algorithmia.getClient(
-          process.env.ALGORITHMIA_DEFAULT_API_KEY
-        ).getAlgoBuildLogs(
-          'dherring',
-          'ResultFile',
-          '579ff0a8-6b1f-4cf4-83a5-c7cb6999ae24'
+      // create an algorithm.
+      await algoClient.createAlgo(ALGORITHMIA_TEST_USERNAME, testAlgo);
+      // invoke algorithm build process.
+      await algoClient.buildAlgo(
+        ALGORITHMIA_TEST_USERNAME,
+        testAlgo.name,
+      );
+
+      const algorithmBuildsList: AlgorithmBuildsList = JSON.parse(
+        await algoClient.listAlgoBuilds(
+          ALGORITHMIA_TEST_USERNAME,
+          testAlgo.name
         )
       );
 
-      expect(response.length > 0);
+      const response = JSON.parse(
+        await algoClient.getAlgoBuildLogs(
+           ALGORITHMIA_TEST_USERNAME,
+          testAlgo.name,
+          algorithmBuildsList.results[0].build_id
+        )
+      );
+
+      expect(response.logs).toBeDefined;
+      expect(response.logs).toMatch('Beginning container customization')
+      
+      // delete the algorithm.
+      await algoClient.deleteAlgo(ALGORITHMIA_TEST_USERNAME, testAlgo.name);
     });
   });
 
   describe('algorithm delete call', () => {
     it('deletes for algorithm', async () => {
-      const testAlgo = Algorithm.prototype.createTestAlgo();
-      await Algorithmia.getClient(
-        process.env.ALGORITHMIA_DEFAULT_API_KEY
-      ).createAlgo('dherring', testAlgo);
+      await algoClient.createAlgo(ALGORITHMIA_TEST_USERNAME, testAlgo);
+      const algorithm: Algorithm = JSON.parse(
+        await algoClient.getAlgo(ALGORITHMIA_TEST_USERNAME, testAlgo.name)
+      );
 
-      const response = await Algorithmia.getClient(
-        process.env.ALGORITHMIA_DEFAULT_API_KEY
-      ).deleteAlgo('dherring', 'my_first_algorithm');
+      expect(algorithm.name).toBe(testAlgo.name);
+
+      const response = await algoClient.deleteAlgo(ALGORITHMIA_TEST_USERNAME, testAlgo.name);
 
       expect(response).toBe('');
+
+      const deletedAlgo =
+        await algoClient.getAlgo(ALGORITHMIA_TEST_USERNAME, testAlgo.name)
+      ;
+
+      expect(deletedAlgo).toBe("{\"error\":\"No such algorithm\"}");
     });
   });
 
   describe('algorithm create call', () => {
     it('creates for algorithm', async () => {
-      const testAlgo = Algorithm.prototype.createTestAlgo();
+      const anotherAlgo = {
+        details: {
+          label: 'Another Algorithm',
+        },
+        name: 'another_algorithm',
+        settings: {
+          environment: 'cpu',
+          language: 'python3-1',
+          license: 'apl',
+          network_access: 'full',
+          pipeline_enabled: true,
+          source_visibility: 'closed',
+        },
+      }
       const algorithm: Algorithm = JSON.parse(
-        await Algorithmia.getClient(
-          process.env.ALGORITHMIA_DEFAULT_API_KEY
-        ).createAlgo('dherring', testAlgo)
+        await algoClient.createAlgo(ALGORITHMIA_TEST_USERNAME, anotherAlgo)
       );
 
-      expect(algorithm.name).toBe('my_first_algorithm');
-
-      await Algorithmia.getClient(
-        process.env.ALGORITHMIA_DEFAULT_API_KEY
-      ).deleteAlgo('dherring', 'my_first_algorithm');
+      expect(algorithm.name).toBe(anotherAlgo.name);
+      await algoClient.deleteAlgo(ALGORITHMIA_TEST_USERNAME, anotherAlgo.name);
     });
   });
 
   describe('algorithm list scms call', () => {
     it('lists scms', async () => {
       const response: SCM[] = JSON.parse(
-        await Algorithmia.getClient(
-          process.env.ALGORITHMIA_DEFAULT_API_KEY
-        ).listSCMs()
-      );
+        await algoClient.listSCMs()
+      ).results;
 
+      const internalSCM = response.filter(scm => scm.id === 'internal')[0]
       expect(response.length > 0);
+      expect(internalSCM.provider).toBe('internal')
     });
   });
 
   describe('algorithm get scm call', () => {
     it('gets an scm', async () => {
       const scm: SCM = JSON.parse(
-        await Algorithmia.getClient(
-          process.env.ALGORITHMIA_DEFAULT_API_KEY
-        ).getSCM('internal')
+        await algoClient.getSCM('internal')
       );
 
       expect(scm.enabled).toBe(true);
@@ -125,18 +202,16 @@ describe('Localisation initialization', () => {
   describe('algorithm get query scm call', () => {
     it('queries an scm', async () => {
       const scmAuth: AlgorithmSCMAuthorizationStatus = JSON.parse(
-        await Algorithmia.getClient(
-          process.env.ALGORITHMIA_DEFAULT_API_KEY
-        ).querySCMStatus('github')
+        await algoClient.querySCMStatus('internal')
       );
 
-      expect(scmAuth.authorization_status).toBe('authorized');
+      expect(scmAuth.authorization_status).toBe('unauthorized');
     });
   });
 
   /*describe('algorithm post revoke scm status call', () => {
         it('revokes an scm status', async () => {
-            const response = JSON.parse(await Algorithmia.getClient(process.env.ALGORITHMIA_TEST_DEFAULT_KEY, process.env.ALGORITHMIA_TEST_ADDRESS).revokeSCMStatus('fa359f8a-5a37-4726-9174-1475b41939ef'));
+            const response = JSON.parse(await Algorithmia.getClient(process.env.ALGORITHMIA_TEST_DEFAULT_API_KEY, process.env.ALGORITHMIA_TEST_API_ADDRESS).revokeSCMStatus('fa359f8a-5a37-4726-9174-1475b41939ef'));
 
             expect(response).toBe('');
         });
@@ -144,11 +219,10 @@ describe('Localisation initialization', () => {
 
   describe('organization get organization', () => {
     it('gets an organization', async () => {
-      const organization: Organization = 
-        await Algorithmia.getClient(
-          process.env.ALGORITHMIA_ADMIN_API_KEY,
-          process.env.ALGORITHMIA_TEST_ADDRESS
-        ).getOrganization('MyOrg1614039696593');
+      const organization: Organization = await Algorithmia.getClient(
+        ALGORITHMIA_TEST_ADMIN_API_KEY,
+        ALGORITHMIA_TEST_API_ADDRESS
+      ).getOrganization('MyOrg1614039696593');
 
       expect(organization.org_name).toBe('MyOrg1614039696593');
     });
@@ -156,17 +230,18 @@ describe('Localisation initialization', () => {
 
   describe('organization edit call', () => {
     it('edits for organization', async () => {
-      const organization: Organization = 
-        await Algorithmia.getClient(
-          process.env.ALGORITHMIA_ADMIN_API_KEY,
-          process.env.ALGORITHMIA_TEST_ADDRESS
-        ).getOrganization('MyOrg1614118479820');
-      organization.org_email = 'SomeOtherEmail@HowDoYouEven.com'
-      const response = await Algorithmia.getClient(
-        process.env.ALGORITHMIA_ADMIN_API_KEY,
-        process.env.ALGORITHMIA_TEST_ADDRESS
-      ).editOrganization(organization.org_name, JSON.stringify(organization));
-      expect(response).toBe('');
+      const algoAdminClient = Algorithmia.getClient(
+        ALGORITHMIA_TEST_ADMIN_API_KEY,
+        ALGORITHMIA_TEST_API_ADDRESS
+      )
+      const organization: Organization = await algoAdminClient.getOrganization('MyOrg1614118479820');
+
+      organization.org_email = 'SomeOtherEmail@SomeOtherEmail.com';
+      await algoAdminClient.editOrganization(organization.org_name, JSON.stringify(organization));
+
+      const organizationEdited: Organization = await algoAdminClient.getOrganization('MyOrg1614118479820');
+
+      expect(organizationEdited.org_email).toBe('SomeOtherEmail@SomeOtherEmail.com');
     });
   });
 
@@ -174,17 +249,17 @@ describe('Localisation initialization', () => {
     it('creates for organization', async () => {
       const testOrganization = {
         org_contact_name: 'some owner',
-        org_email: 'SomeEmail@Whatsittoyou.com',
+        org_email: 'SomeEmail@SomeEmail.com',
         org_label: 'myLabel',
         org_name: 'MyOrg' + Date.now(),
         org_url: 'https://algorithmia.com',
-        resource_type: 'organization'
+        resource_type: 'organization',
       };
 
       const organization: Organization = JSON.parse(
         await Algorithmia.getClient(
-          process.env.ALGORITHMIA_ADMIN_API_KEY,
-          process.env.ALGORITHMIA_TEST_ADDRESS
+          ALGORITHMIA_TEST_ADMIN_API_KEY,
+          ALGORITHMIA_TEST_API_ADDRESS
         ).createOrganization(testOrganization, OrgType.Legacy)
       );
       expect(organization.org_name).toBe(testOrganization.org_name);

@@ -1,5 +1,5 @@
 export interface Json {
-  [key: string]: number | string | null | Json;
+  [key: string]: number | string | null | Json | boolean;
 }
 
 export type Input = Json | string | Buffer;

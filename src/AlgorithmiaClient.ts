@@ -4,6 +4,8 @@ import type { Input } from './ContentTypeHelper';
 import { DataFile, DataDir } from './Data';
 import { URLSearchParams } from 'url';
 import { Organization, OrgType, OrgTypes } from './Algorithm';
+import dotenv from 'dotenv';
+dotenv.config();
 
 class AlgorithmiaClient {
   private defaultApiAddress = 'https://api.algorithmia.com';
@@ -23,16 +25,15 @@ class AlgorithmiaClient {
       apiAddress ||
       process.env.ALGORITHMIA_API_ADDRESS ||
       this.defaultApiAddress;
-    this.key = key || process.env.ALGORITHMIA_API_KEY || '';
+    this.key = key || process.env.ALGORITHMIA_DEFAULT_API_KEY || '';
     if (key) {
       if (key.startsWith('Simple ')) {
         this.key = key;
       } else {
         this.key = 'Simple ' + key;
       }
-    } else {
-      this.key = '';
     }
+
     this.httpClient = new HttpClient(this.key);
   }
 
@@ -57,6 +58,38 @@ class AlgorithmiaClient {
   getAlgo(userName: string, algoName: string) {
     return this.httpClient.get(
       this.apiAddress + this.algorithmsPrefix + '/' + userName + '/' + algoName
+    );
+  }
+
+  /**
+   * Get an Algorithm build object from this client
+   * @param userName the algorithmia user name
+   * @param algoName the name of the algorithm
+   * @return an Algorithm build object for the specified algorithm
+   */
+  buildAlgo(userName: string, algoName: string) {
+    return this.httpClient.post(
+      `${this.apiAddress}${this.algorithmsPrefix}/${userName}/${algoName}/compile`,
+      {},
+      'application/json'
+    );
+  }
+
+  /**
+   * Get an Algorithm published object from this client
+   * @param userName the algorithmia user name
+   * @param algoName the name of the algorithm
+   * @return an Algorithm published object for the specified algorithm
+   */
+   publishAlgo(userName: string, algoName: string) {
+    return this.httpClient.post(
+      `${this.apiAddress}${this.algorithmsPrefix}/${userName}/${algoName}/version`,
+      {settings:{
+        algorithm_callability:"private",
+        insights_enabled:false,
+        royalty_microcredits:0
+      },version_info:{version_type:"revision"}},
+      'application/json'
     );
   }
 
@@ -130,8 +163,7 @@ class AlgorithmiaClient {
    * @return a BuildLogs object for the specified algorithm
    */
   getAlgoBuildLogs(userName: string, algoName: string, buildId: string) {
-    const path = `${this.algorithmsPrefix}/${userName}/${algoName}/builds/${buildId}/logs`;
-    return this.httpClient.get(`${this.apiAddress}${path}`);
+    return this.httpClient.get(`${this.apiAddress}${this.algorithmsPrefix}/${userName}/${algoName}/builds/${buildId}/logs`);
   }
 
   /**

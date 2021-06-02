@@ -33,25 +33,6 @@ class Algorithm {
     this.self_link = self_link;
     this.resource_type = resource_type;
   }
-
-  //for testing
-  createTestAlgo() {
-    const requestObject = {
-      details: {
-        label: 'My First Algorithm',
-      },
-      name: 'my_first_algorithm',
-      settings: {
-        environment: 'cpu',
-        language: 'python3-1',
-        license: 'apl',
-        network_access: 'full',
-        pipeline_enabled: true,
-        source_visibility: 'closed',
-      },
-    };
-    return requestObject;
-  }
 }
 
 class Details {
