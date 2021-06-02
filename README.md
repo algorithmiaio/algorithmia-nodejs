@@ -14,7 +14,16 @@ Install it for your project by adding `algorithmia` to your package.json:
 npm install --save algorithmia
 ```
 
-Then instantiate an Algorithmia client using your API key:
+Set runtime environment variables by creating `.env` file in the root directory with the following keys
+
+---
+
+   |Name|Value|Purpose|
+   |-|-|-|
+   |ALGORITHMIA_API_ADDRESS|`<key for Algorithmia api url>`|Optional, will default to https://api.algorithmia.com|
+   |ALGORITHMIA_DEFAULT_API_KEY|`<secret key to run Algorithmia api>`|Required for algorithmia client|
+
+Then instantiate an Algorithmia client using your API key environment variables:
 
 ```javascript
 const algorithmia = require('algorithmia');

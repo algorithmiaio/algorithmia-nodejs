@@ -5,9 +5,30 @@ import { resolve } from 'path';
 import {
   ALGORITHMIA_TEST_API_ADDRESS,
   ALGORITHMIA_TEST_DEFAULT_API_KEY,
-  ALGORITHMIA_TEST_USERNAME,
-  createTestAlgo,
+  ALGORITHMIA_TEST_USERNAME
 } from './TestUtils';
+import { AlgorithmiaClient } from '../src/AlgorithmiaClient';
+import { DataFile } from '../src/Data';
+
+const fileCheckExists = async (algoClient: AlgorithmiaClient, file: DataFile) => {
+  const fileAlreadyExists = await file.exists();
+      if (fileAlreadyExists) {
+        await file.delete();
+      }
+
+      const parentDirExists = await file.parent()?.exists();
+
+      if (!parentDirExists) {
+        const dir = file.parent()!;
+        const dirName = dir.baseName();
+        const dirParentDir = dir.parent();
+        const dirParentName = dirParentDir?.baseName();
+
+        const dir2 = algoClient.dir(dirParentName!);
+
+        await dir2.create(dirName);
+      }
+}
 
 describe('Localisation initialization', () => {
   const algoClient = Algorithmia.getClient(
@@ -23,23 +44,7 @@ describe('Localisation initialization', () => {
     it('uploads file', async () => {
       const file = algoClient.file(`data://${ALGORITHMIA_TEST_USERNAME}/MyTestDirectory2/TestFile.txt`);
 
-      const fileAlreadyExists = await file.exists();
-      if (fileAlreadyExists) {
-        await file.delete();
-      }
-
-      const parentDirExists = await file.parent()?.exists();
-
-      if (!parentDirExists) {
-        const dir = file.parent()!;
-        const dirName = dir.baseName();
-        const dirParentDir = dir.parent();
-        const dirParentName = dirParentDir?.baseName();
-
-        const dir2 = algoClient.dir(dirParentName!);
-
-        await dir2.create(dirName);
-      }
+      await fileCheckExists(algoClient, file);
 
       await file.put('test text algorithm put call');
 
@@ -51,23 +56,7 @@ describe('Localisation initialization', () => {
     it('uploads file', async () => {
       const file = algoClient.file(`data://${ALGORITHMIA_TEST_USERNAME}/MyTestDirectory2/TestFile.txt`);
 
-      const fileAlreadyExists = await file.exists();
-      if (fileAlreadyExists) {
-        await file.delete();
-      }
-
-      const parentDirExists = await file.parent()?.exists();
-
-      if (!parentDirExists) {
-        const dir = file.parent()!;
-        const dirName = dir.baseName();
-        const dirParentDir = dir.parent();
-        const dirParentName = dirParentDir?.baseName();
-
-        const dir2 = algoClient.dir(dirParentName!);
-
-        await dir2.create(dirName);
-      }
+      await fileCheckExists(algoClient, file);
 
       await file.putString('test text algorithm file putString call');
 
@@ -79,23 +68,7 @@ describe('Localisation initialization', () => {
     it('uploads file', async () => {
       const file = algoClient.file(`data://${ALGORITHMIA_TEST_USERNAME}/MyTestDirectory2/TestFile.txt`);
 
-      const fileAlreadyExists = await file.exists();
-      if (fileAlreadyExists) {
-        await file.delete();
-      }
-
-      const parentDirExists = await file.parent()?.exists();
-
-      if (!parentDirExists) {
-        const dir = file.parent()!;
-        const dirName = dir.baseName();
-        const dirParentDir = dir.parent();
-        const dirParentName = dirParentDir?.baseName();
-
-        const dir2 = algoClient.dir(dirParentName!);
-
-        await dir2.create(dirName);
-      }
+      await fileCheckExists(algoClient, file);
 
       const dataString = {testText: "test text algorithm file putJson call"};
       await file.putJson(dataString);
@@ -116,23 +89,7 @@ describe('Localisation initialization', () => {
     it('gets file', async () => {
       const file = algoClient.file(`data://${ALGORITHMIA_TEST_USERNAME}/MyTestDirectory2/TestFile.txt`);
 
-      const fileAlreadyExists = await file.exists();
-      if (fileAlreadyExists) {
-        await file.delete();
-      }
-
-      const parentDirExists = await file.parent()?.exists();
-
-      if (!parentDirExists) {
-        const dir = file.parent()!;
-        const dirName = dir.baseName();
-        const dirParentDir = dir.parent();
-        const dirParentName = dirParentDir?.baseName();
-
-        const dir2 = algoClient.dir(dirParentName!);
-
-        await dir2.create(dirName);
-      }
+      await fileCheckExists(algoClient, file);
 
       await file.put('test text algorithm file get call');
 
@@ -146,23 +103,7 @@ describe('Localisation initialization', () => {
     it('gets file', async () => {
       const file = algoClient.file(`data://${ALGORITHMIA_TEST_USERNAME}/MyTestDirectory2/TestFile.txt`);
 
-      const fileAlreadyExists = await file.exists();
-      if (fileAlreadyExists) {
-        await file.delete();
-      }
-
-      const parentDirExists = await file.parent()?.exists();
-
-      if (!parentDirExists) {
-        const dir = file.parent()!;
-        const dirName = dir.baseName();
-        const dirParentDir = dir.parent();
-        const dirParentName = dirParentDir?.baseName();
-
-        const dir2 = algoClient.dir(dirParentName!);
-
-        await dir2.create(dirName);
-      }
+      await fileCheckExists(algoClient, file);
 
       await file.put('algorithm file getString call');
 
@@ -176,23 +117,7 @@ describe('Localisation initialization', () => {
     it('gets file', async () => {
       const file = algoClient.file(`data://${ALGORITHMIA_TEST_USERNAME}/MyTestDirectory2/TestFile.txt`);
 
-      const fileAlreadyExists = await file.exists();
-      if (fileAlreadyExists) {
-        await file.delete();
-      }
-
-      const parentDirExists = await file.parent()?.exists();
-
-      if (!parentDirExists) {
-        const dir = file.parent()!;
-        const dirName = dir.baseName();
-        const dirParentDir = dir.parent();
-        const dirParentName = dirParentDir?.baseName();
-
-        const dir2 = algoClient.dir(dirParentName!);
-
-        await dir2.create(dirName);
-      }
+      await fileCheckExists(algoClient, file);
 
       const dataString = {testText: "test text algorithm file getJson call"};
       await file.putJson(dataString);
@@ -207,23 +132,7 @@ describe('Localisation initialization', () => {
     it('gets file', async () => {
       const file = algoClient.file(`data://${ALGORITHMIA_TEST_USERNAME}/MyTestDirectory2/TestFile.txt`);
 
-      const fileAlreadyExists = await file.exists();
-      if (fileAlreadyExists) {
-        await file.delete();
-      }
-
-      const parentDirExists = await file.parent()?.exists();
-
-      if (!parentDirExists) {
-        const dir = file.parent()!;
-        const dirName = dir.baseName();
-        const dirParentDir = dir.parent();
-        const dirParentName = dirParentDir?.baseName();
-
-        const dir2 = algoClient.dir(dirParentName!);
-
-        await dir2.create(dirName);
-      }
+      await fileCheckExists(algoClient, file);
 
       await file.put('test text algorithm file getBinary call');
 
@@ -240,23 +149,7 @@ describe('Localisation initialization', () => {
     it('checks for file existence', async () => {
       const file = algoClient.file(`data://${ALGORITHMIA_TEST_USERNAME}/MyTestDirectory2/TestFile.txt`);
 
-      const fileAlreadyExists = await file.exists();
-      if (fileAlreadyExists) {
-        await file.delete();
-      }
-
-      const parentDirExists = await file.parent()?.exists();
-
-      if (!parentDirExists) {
-        const dir = file.parent()!;
-        const dirName = dir.baseName();
-        const dirParentDir = dir.parent();
-        const dirParentName = dirParentDir?.baseName();
-
-        const dir2 = algoClient.dir(dirParentName!);
-
-        await dir2.create(dirName);
-      }
+      await fileCheckExists(algoClient, file);
 
       await file.put('test algorithm file exists call');
 
@@ -359,23 +252,7 @@ describe('Localisation initialization', () => {
     it('gets dir', async () => {
       const file = algoClient.file(`data://${ALGORITHMIA_TEST_USERNAME}/MyTestDirectory4/TestFile.txt`);
 
-      const fileAlreadyExists = await file.exists();
-      if (fileAlreadyExists) {
-        await file.delete();
-      }
-
-      const parentDirExists = await file.parent()?.exists();
-
-      if (!parentDirExists) {
-        const dir = file.parent()!;
-        const dirName = dir.baseName();
-        const dirParentDir = dir.parent();
-        const dirParentName = dirParentDir?.baseName();
-
-        const dir2 = algoClient.dir(dirParentName!);
-
-        await dir2.create(dirName);
-      }
+      await fileCheckExists(algoClient, file);
 
       await file.put('test algorithm directory get call');
 

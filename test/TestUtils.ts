@@ -31,10 +31,6 @@ assert(
   ALGORITHMIA_TEST_API_ADDRESS,
   envMessage(Object.keys({ ALGORITHMIA_TEST_API_ADDRESS })[0])
 );
-assert(
-  ALGORITHMIA_TEST_ADMIN_API_KEY,
-  envMessage(Object.keys({ ALGORITHMIA_TEST_ADMIN_API_KEY })[0])
-);
 
 export const createTestAlgo = name => ({
   details: {
