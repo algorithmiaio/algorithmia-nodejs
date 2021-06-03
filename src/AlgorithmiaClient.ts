@@ -276,6 +276,17 @@ class AlgorithmiaClient {
     );
   }
 
+  /**
+   * Delete an organization from this client
+   * @param orgName the organization name
+   * @return an empty response
+   */
+  deleteOrganization(orgName: string) {
+    return this.httpClient.delete(
+      `${this.apiAddress}${this.organizationsPrefix}/${orgName}`
+    );
+  }
+
   clone(obj: Input) {
     return JSON.parse(JSON.stringify(obj));
   }

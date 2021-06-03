@@ -214,7 +214,7 @@ describe('Localisation initialization', () => {
         org_contact_name: 'some owner',
         org_email: 'SomeEmail@example.com',
         org_label: 'MyTestOrganization1',
-        org_name: 'MyTestOrganization1',
+        org_name: `MyTestOrg${Date.now()}`,
         org_url: 'https://algorithmia.com',
         resource_type: 'organization',
       };
@@ -229,6 +229,8 @@ describe('Localisation initialization', () => {
       );
 
       expect(organization.org_name).toBe(testOrganization.org_name);
+
+      await algoAdminClient.deleteOrganization(testOrganization.org_name);
     });
   });
 
@@ -238,7 +240,7 @@ describe('Localisation initialization', () => {
         org_contact_name: 'some owner',
         org_email: 'SomeEmail@example.com',
         org_label: 'MyTestOrganization2',
-        org_name: 'MyTestOrganization2',
+        org_name: `MyTestOrg${Date.now()}`,
         org_url: 'https://algorithmia.com',
         resource_type: 'organization',
       };
@@ -262,6 +264,8 @@ describe('Localisation initialization', () => {
         await algoAdminClient.getOrganization(testOrganization.org_name);
 
       expect(organizationEdited.org_email).toBe('SomeOtherEmail@example.com');
+
+      await algoAdminClient.deleteOrganization(testOrganization.org_name);
     });
   });
 
@@ -271,7 +275,7 @@ describe('Localisation initialization', () => {
         org_contact_name: 'some owner',
         org_email: 'SomeEmail@example.com',
         org_label: 'MyTestOrganization3',
-        org_name: 'MyTestOrg3' + Date.now(),
+        org_name: `MyTestOrg${Date.now()}`,
         org_url: 'https://algorithmia.com',
         resource_type: 'organization',
       };
@@ -283,6 +287,8 @@ describe('Localisation initialization', () => {
         )
       );
       expect(organization.org_name).toBe(testOrganization.org_name);
+
+      await algoAdminClient.deleteOrganization(testOrganization.org_name);
     });
   });
 });
