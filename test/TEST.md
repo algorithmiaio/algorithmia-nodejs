@@ -13,9 +13,9 @@ Either create or modify an `.env` file in root directory and add the following k
    |ALGORITHMIA_TEST_DEFAULT_API_KEY|`<key for Algorithmia api url>`|Required for your algorithmia testing client|
    |ALGORITHMIA_TEST_API_ADDRESS|`<secret key to run Algorithmia api>`|Required for your algorithmia testing client|
    |ALGORITHMIA_TEST_USERNAME|`<your Algorithmia test account username>`|Required to test algorithmia client methods, file uploads, and directory creation|
-   |ALGORITHMIA_TEST_USERNAME|`<secret key to your admin Algorithmia account`|Required to test organization read, creation and update|
+   |ALGORITHMIA_TEST_ADMIN_API_KEY|`<secret key to your admin Algorithmia account`|Required to test organization read, creation and update|
 
-Normally you'd want `ALGORITHMIA_TEST_API_ADDRES` to be `https://test.algorithmia.com` or some sort of testing environment. 
+Normally you'd want `ALGORITHMIA_TEST_API_ADDRES` to be some sort of testing environment. 
 
 ## Running tests
 

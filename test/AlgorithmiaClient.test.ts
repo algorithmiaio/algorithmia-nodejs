@@ -206,23 +206,55 @@ describe('Localisation initialization', () => {
 
   describe('organization get organization', () => {
     it('gets an organization', async () => {
+      const testOrganization = {
+        org_contact_name: 'some owner',
+        org_email: 'SomeEmail@SomeEmail.com',
+        org_label: 'myLabel',
+        org_name: 'MyOrg' + Date.now(),
+        org_url: 'https://algorithmia.com',
+        resource_type: 'organization',
+      };
+
+      const createdOrganization: Organization = JSON.parse(
+        await Algorithmia.getClient(
+          ALGORITHMIA_TEST_ADMIN_API_KEY,
+          ALGORITHMIA_TEST_API_ADDRESS
+        ).createOrganization(testOrganization, OrgType.Legacy)
+      );
+
       const organization: Organization = await Algorithmia.getClient(
         ALGORITHMIA_TEST_ADMIN_API_KEY,
         ALGORITHMIA_TEST_API_ADDRESS
-      ).getOrganization('MyOrg1614039696593');
+      ).getOrganization(createdOrganization.org_name);
 
-      expect(organization.org_name).toBe('MyOrg1614039696593');
+      expect(organization.org_name).toBe(createdOrganization.org_name);
     });
   });
 
   describe('organization edit call', () => {
     it('edits for organization', async () => {
+      const testOrganization = {
+        org_contact_name: 'some owner',
+        org_email: 'SomeEmail@SomeEmail.com',
+        org_label: 'myLabel',
+        org_name: 'MyOrg' + Date.now(),
+        org_url: 'https://algorithmia.com',
+        resource_type: 'organization',
+      };
+
+      const createdOrganization: Organization = JSON.parse(
+        await Algorithmia.getClient(
+          ALGORITHMIA_TEST_ADMIN_API_KEY,
+          ALGORITHMIA_TEST_API_ADDRESS
+        ).createOrganization(testOrganization, OrgType.Legacy)
+      );
+
       const algoAdminClient = Algorithmia.getClient(
         ALGORITHMIA_TEST_ADMIN_API_KEY,
         ALGORITHMIA_TEST_API_ADDRESS
       );
       const organization: Organization = await algoAdminClient.getOrganization(
-        'MyOrg1614118479820'
+        createdOrganization.org_name
       );
 
       organization.org_email = 'SomeOtherEmail@SomeOtherEmail.com';
@@ -232,7 +264,7 @@ describe('Localisation initialization', () => {
       );
 
       const organizationEdited: Organization =
-        await algoAdminClient.getOrganization('MyOrg1614118479820');
+        await algoAdminClient.getOrganization(createdOrganization.org_name);
 
       expect(organizationEdited.org_email).toBe(
         'SomeOtherEmail@SomeOtherEmail.com'
