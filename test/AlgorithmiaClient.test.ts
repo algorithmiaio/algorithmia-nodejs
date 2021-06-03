@@ -22,6 +22,10 @@ describe('Localisation initialization', () => {
     ALGORITHMIA_TEST_DEFAULT_API_KEY,
     ALGORITHMIA_TEST_API_ADDRESS
   );
+  const algoAdminClient = Algorithmia.getClient(
+    ALGORITHMIA_TEST_ADMIN_API_KEY,
+    ALGORITHMIA_TEST_API_ADDRESS
+  );
 
   beforeEach(() => {
     jest.resetModules();
@@ -208,26 +212,23 @@ describe('Localisation initialization', () => {
     it('gets an organization', async () => {
       const testOrganization = {
         org_contact_name: 'some owner',
-        org_email: 'SomeEmail@SomeEmail.com',
-        org_label: 'myLabel',
-        org_name: 'MyOrg' + Date.now(),
+        org_email: 'SomeEmail@example.com',
+        org_label: 'MyTestOrganization1',
+        org_name: 'MyTestOrganization1',
         org_url: 'https://algorithmia.com',
         resource_type: 'organization',
       };
 
-      const createdOrganization: Organization = JSON.parse(
-        await Algorithmia.getClient(
-          ALGORITHMIA_TEST_ADMIN_API_KEY,
-          ALGORITHMIA_TEST_API_ADDRESS
-        ).createOrganization(testOrganization, OrgType.Legacy)
+      await algoAdminClient.createOrganization(
+        testOrganization,
+        OrgType.Legacy
       );
 
-      const organization: Organization = await Algorithmia.getClient(
-        ALGORITHMIA_TEST_ADMIN_API_KEY,
-        ALGORITHMIA_TEST_API_ADDRESS
-      ).getOrganization(createdOrganization.org_name);
+      const organization: Organization = await algoAdminClient.getOrganization(
+        testOrganization.org_name
+      );
 
-      expect(organization.org_name).toBe(createdOrganization.org_name);
+      expect(organization.org_name).toBe(testOrganization.org_name);
     });
   });
 
@@ -235,40 +236,32 @@ describe('Localisation initialization', () => {
     it('edits for organization', async () => {
       const testOrganization = {
         org_contact_name: 'some owner',
-        org_email: 'SomeEmail@SomeEmail.com',
-        org_label: 'myLabel',
-        org_name: 'MyOrg' + Date.now(),
+        org_email: 'SomeEmail@example.com',
+        org_label: 'MyTestOrganization2',
+        org_name: 'MyTestOrganization2',
         org_url: 'https://algorithmia.com',
         resource_type: 'organization',
       };
 
-      const createdOrganization: Organization = JSON.parse(
-        await Algorithmia.getClient(
-          ALGORITHMIA_TEST_ADMIN_API_KEY,
-          ALGORITHMIA_TEST_API_ADDRESS
-        ).createOrganization(testOrganization, OrgType.Legacy)
+      await algoAdminClient.createOrganization(
+        testOrganization,
+        OrgType.Legacy
       );
 
-      const algoAdminClient = Algorithmia.getClient(
-        ALGORITHMIA_TEST_ADMIN_API_KEY,
-        ALGORITHMIA_TEST_API_ADDRESS
-      );
       const organization: Organization = await algoAdminClient.getOrganization(
-        createdOrganization.org_name
+        testOrganization.org_name
       );
 
-      organization.org_email = 'SomeOtherEmail@SomeOtherEmail.com';
+      organization.org_email = 'SomeOtherEmail@example.com';
       await algoAdminClient.editOrganization(
-        organization.org_name,
+        testOrganization.org_name,
         JSON.stringify(organization)
       );
 
       const organizationEdited: Organization =
-        await algoAdminClient.getOrganization(createdOrganization.org_name);
+        await algoAdminClient.getOrganization(testOrganization.org_name);
 
-      expect(organizationEdited.org_email).toBe(
-        'SomeOtherEmail@SomeOtherEmail.com'
-      );
+      expect(organizationEdited.org_email).toBe('SomeOtherEmail@example.com');
     });
   });
 
@@ -276,18 +269,18 @@ describe('Localisation initialization', () => {
     it('creates for organization', async () => {
       const testOrganization = {
         org_contact_name: 'some owner',
-        org_email: 'SomeEmail@SomeEmail.com',
-        org_label: 'myLabel',
-        org_name: 'MyOrg' + Date.now(),
+        org_email: 'SomeEmail@example.com',
+        org_label: 'MyTestOrganization3',
+        org_name: 'MyTestOrg3' + Date.now(),
         org_url: 'https://algorithmia.com',
         resource_type: 'organization',
       };
 
       const organization: Organization = JSON.parse(
-        await Algorithmia.getClient(
-          ALGORITHMIA_TEST_ADMIN_API_KEY,
-          ALGORITHMIA_TEST_API_ADDRESS
-        ).createOrganization(testOrganization, OrgType.Legacy)
+        await algoAdminClient.createOrganization(
+          testOrganization,
+          OrgType.Legacy
+        )
       );
       expect(organization.org_name).toBe(testOrganization.org_name);
     });
