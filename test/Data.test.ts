@@ -99,7 +99,6 @@ describe('Localisation initialization', () => {
       }
 
       const dataString = 'nah dawg';
-      // adding a comment to trigger ci
       await file.putJson(JSON.stringify(dataString));
 
       expect(await file.exists()).toBe(true);
