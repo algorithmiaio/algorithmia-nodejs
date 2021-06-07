@@ -86,6 +86,7 @@ describe('Localisation initialization', () => {
       const parentDirExists = await file.parent()?.exists();
 
       if (!parentDirExists) {
+        // another comment
         const dir = file.parent()!;
         const dirName = dir.baseName();
         const dirParentDir = dir.parent();
